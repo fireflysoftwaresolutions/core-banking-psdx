@@ -27,7 +27,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.autoconfigure.web.WebProperties;
-import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
+import org.springframework.boot.webflux.error.DefaultErrorAttributes;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.http.HttpStatus;
@@ -114,7 +114,7 @@ class GlobalExceptionHandlerTest {
             MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
             // Add the exception to the exchange attributes
-            exchange.getAttributes().put("org.springframework.boot.web.reactive.error.DefaultErrorAttributes.ERROR", exception);
+            exchange.getAttributes().put("org.springframework.boot.webflux.error.DefaultErrorAttributes.ERROR", exception);
 
             // Setup the spy to return the exception when getError is called
             setupErrorAttributesForException(exception);
@@ -158,7 +158,7 @@ class GlobalExceptionHandlerTest {
             MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
             // Add the exception to the exchange attributes
-            exchange.getAttributes().put("org.springframework.boot.web.reactive.error.DefaultErrorAttributes.ERROR", exception);
+            exchange.getAttributes().put("org.springframework.boot.webflux.error.DefaultErrorAttributes.ERROR", exception);
 
             // Setup the spy to return the exception when getError is called
             setupErrorAttributesForException(exception);

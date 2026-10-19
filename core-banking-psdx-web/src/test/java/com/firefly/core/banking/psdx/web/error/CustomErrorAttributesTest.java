@@ -27,7 +27,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
-import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
+import org.springframework.boot.webflux.error.DefaultErrorAttributes;
 import org.springframework.http.server.RequestPath;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
@@ -73,7 +73,7 @@ class CustomErrorAttributesTest {
         // Setup the spy to return the exception when getError is called
         doAnswer(invocation -> {
             ServerRequest request = invocation.getArgument(0);
-            return request.exchange().getAttributes().get("org.springframework.boot.web.reactive.error.DefaultErrorAttributes.ERROR");
+            return request.exchange().getAttributes().get("org.springframework.boot.webflux.error.DefaultErrorAttributes.ERROR");
         }).when(defaultErrorAttributes).getError(any());
 
         customErrorAttributes = new CustomErrorAttributes(linkBuilderFactory) {
@@ -99,7 +99,7 @@ class CustomErrorAttributesTest {
 
         // Add the exception to the exchange attributes
         RuntimeException testException = new RuntimeException("Test exception");
-        exchange.getAttributes().put("org.springframework.boot.web.reactive.error.DefaultErrorAttributes.ERROR", testException);
+        exchange.getAttributes().put("org.springframework.boot.webflux.error.DefaultErrorAttributes.ERROR", testException);
 
         // Create a mock ServerRequest that returns our exchange
         ServerRequest mockRequest = mock(ServerRequest.class);

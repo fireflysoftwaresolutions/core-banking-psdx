@@ -39,10 +39,8 @@ public class TestSecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
-                .csrf().disable()
-                .authorizeExchange()
-                .anyExchange().permitAll()
-                .and()
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(exchanges -> exchanges.anyExchange().permitAll())
                 .build();
     }
 }

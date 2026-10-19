@@ -22,7 +22,7 @@ import com.firefly.core.banking.psdx.web.utils.LinkBuilder;
 import com.firefly.core.banking.psdx.web.utils.LinkBuilderFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
-import org.springframework.boot.web.reactive.error.DefaultErrorAttributes;
+import org.springframework.boot.webflux.error.DefaultErrorAttributes;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 
