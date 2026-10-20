@@ -12,6 +12,7 @@
     </parent>
 
     <artifactId>core-banking-psdx</artifactId>
+    <name>core-banking-psdx</name>
     <packaging>pom</packaging>
     <modules>
         <module>core-banking-psdx-core</module>

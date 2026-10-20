@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>core-banking-psdx-interfaces</artifactId>
+    <name>core-banking-psdx-interfaces</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
