@@ -5,7 +5,7 @@ spring:
     description: PSD2/PSD3 and FIDA Regulatory Compliance Service
     team:
       name: Firefly Software Foundation
-      email: dev@getfirefly.io
+      email: dev@fireflysoftware.io
 
   r2dbc:
     pool:

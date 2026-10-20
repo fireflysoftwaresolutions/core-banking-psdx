@@ -72,7 +72,7 @@ public class OpenApiConfig {
                                 .url("https://www.apache.org/licenses/LICENSE-2.0")))
                 .servers(Arrays.asList(
                         new Server()
-                                .url("http://core.getfirefly.io/psdx")
+                                .url("https://openplatform.fireflysoftware.io/psdx")
                                 .description("Development Environment"),
                         new Server()
                                 .url("/")

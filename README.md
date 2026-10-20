@@ -9,7 +9,7 @@ A comprehensive reactive microservice for PSD2/PSD3 and FIDA regulatory complian
 
 Part of the **Firefly OpenCore Banking Platform** developed by **Firefly Software Foundation** under the Apache 2.0 license.
 
-**Organization Website**: [getfirefly.io](https://getfirefly.io)
+**Organization Website**: [fireflysoftware.io](https://fireflysoftware.io)
 **GitHub Organization**: [firefly-oss](https://github.com/firefly-oss)
 
 ## Table of Contents
@@ -698,7 +698,7 @@ We welcome contributions to the Firefly Core Banking PSDX service!
 Please use GitHub Issues to report bugs or request features:
 - **Bug reports**: Include steps to reproduce, expected vs actual behavior
 - **Feature requests**: Describe the use case and proposed solution
-- **Security issues**: Email security@getfirefly.io for sensitive issues
+- **Security issues**: Email security@fireflysoftware.io for sensitive issues
 
 ## License
 
@@ -724,6 +724,6 @@ limitations under the License.
 
 **Firefly OpenCore Banking Platform** - Building the future of open banking infrastructure.
 
-**Website**: [getfirefly.io](https://getfirefly.io)
+**Website**: [fireflysoftware.io](https://fireflysoftware.io)
 **GitHub**: [github.com/firefly-oss](https://github.com/firefly-oss)
-**Contact**: [dev@getfirefly.io](mailto:dev@getfirefly.io)
+**Contact**: [dev@fireflysoftware.io](mailto:dev@fireflysoftware.io)
