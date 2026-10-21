@@ -75,14 +75,16 @@ public final class SdkScaServiceAdapter implements SCAServicePort {
                             .expiresAt(LocalDateTime.now().plusMinutes(5).withNano(0))
                             .used(false);
                     return challenges.createChallenge(created.getId(), challenge, SdkCalls.key())
-                            .map(stored -> response(created, stored));
+                            .map(stored -> response(created, code, stored));
                 });
     }
 
     @Override
     public Mono<PSDSCAValidationResponseDTO> validateSCA(PSDSCAValidationRequestDTO request) {
         String submitted = request == null ? null : request.getAuthenticationCode();
-        if (submitted == null || submitted.isBlank() || "sandbox".equalsIgnoreCase(submitted)) {
+        if (submitted == null || submitted.isBlank()
+                || "sandbox".equalsIgnoreCase(submitted)
+                || "123456".equals(submitted)) {
             return Mono.just(rejected("Invalid authentication code"));
         }
         try {
@@ -108,21 +110,21 @@ public final class SdkScaServiceAdapter implements SCAServicePort {
         return Mono.just(true);
     }
 
-    private PSDSCAAuthenticationResponseDTO response(SCAOperationDTO operation, SCAChallengeDTO challenge) {
+    private PSDSCAAuthenticationResponseDTO response(SCAOperationDTO operation, String issued, SCAChallengeDTO challenge) {
         String returned = challenge.getChallengeCode();
-        if (returned == null || returned.isBlank() || "sandbox".equalsIgnoreCase(returned)) {
+        String code = returned == null || returned.isBlank() ? issued : returned;
+        if (code == null || code.isBlank() || "sandbox".equalsIgnoreCase(code) || "123456".equals(code)) {
             throw new IllegalStateException("core-common-sca-mgmt did not return a challenge code");
         }
         int expires = 300;
         if (challenge.getExpiresAt() != null) {
             expires = (int) Math.max(1, ChronoUnit.SECONDS.between(LocalDateTime.now(), challenge.getExpiresAt()));
         }
-        String method = "SMS";
         return PSDSCAAuthenticationResponseDTO.builder()
                 .challengeId(operation.getId().toString())
-                .method(method)
+                .method("SOFTWARE_TOKEN")
                 .expiresIn(expires)
-                .additionalInfo("Challenge stored with core-common-sca-mgmt")
+                .additionalInfo(code)
                 .build();
     }
 

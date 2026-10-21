@@ -16,6 +16,7 @@
 
 package io.fireflysoftware.core.banking.psdx.core.config;
 
+import io.fireflysoftware.core.banking.ledger.sdk.api.AccountTransactionsApi;
 import io.fireflysoftware.core.banking.ledger.sdk.api.TransactionsApi;
 import io.fireflysoftware.core.banking.ledger.sdk.invoker.ApiClient;
 import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxTransactionServiceAdapter;
@@ -41,6 +42,6 @@ public class TransactionServiceClientConfig {
     public TransactionServicePort coreTransactionServicePort(@Value("${integration.ledger.base-url}") String baseUrl) {
         ApiClient client = new ApiClient();
         client.setBasePath(SdkCalls.base(baseUrl));
-        return new SdkTransactionServiceAdapter(new TransactionsApi(client));
+        return new SdkTransactionServiceAdapter(new TransactionsApi(client), new AccountTransactionsApi(client));
     }
 }

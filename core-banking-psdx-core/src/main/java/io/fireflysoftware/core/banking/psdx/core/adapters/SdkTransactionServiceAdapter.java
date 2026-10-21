@@ -16,6 +16,7 @@
 
 package io.fireflysoftware.core.banking.psdx.core.adapters;
 
+import io.fireflysoftware.core.banking.ledger.sdk.api.AccountTransactionsApi;
 import io.fireflysoftware.core.banking.ledger.sdk.api.TransactionsApi;
 import io.fireflysoftware.core.banking.ledger.sdk.model.TransactionDTO;
 import io.fireflysoftware.core.banking.psdx.core.ports.TransactionServicePort;
@@ -27,21 +28,24 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Reads ledger transactions from core-banking-ledger and keeps the rows for the requested account.
+ * Reads ledger transactions for one account. An account filter never falls back to the first ledger page.
  */
 public final class SdkTransactionServiceAdapter implements TransactionServicePort {
 
     private final TransactionsApi transactions;
+    private final AccountTransactionsApi byAccount;
 
-    public SdkTransactionServiceAdapter(TransactionsApi transactions) {
+    public SdkTransactionServiceAdapter(TransactionsApi transactions, AccountTransactionsApi byAccount) {
         this.transactions = transactions;
+        this.byAccount = byAccount;
     }
 
     @Override
     public Flux<PSDTransactionDTO> getTransactionsByAccountId(UUID accountId, LocalDate fromDate, LocalDate toDate) {
-        return transactions.filterProducts(0, 200, null, null, null, null, SdkCalls.key())
-                .flatMapMany(page -> Flux.fromIterable(SdkCalls.convert(page.getContent(), TransactionDTO.class)))
-                .filter(transaction -> accountId != null && accountId.equals(transaction.getAccountId()))
+        if (accountId == null) {
+            return Flux.empty();
+        }
+        return byAccount.listByAccount(accountId)
                 .map(this::toTransaction)
                 .filter(transaction -> within(transaction, fromDate, toDate));
     }
