@@ -25,38 +25,58 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Default implementation of the CardServicePort.
- * This implementation throws exceptions as "not yet implemented".
+ * In-memory card sample. The same party, card, or transaction id always returns the same record.
  */
 @Component
 public class DefaultCardServiceAdapter implements CardServicePort {
 
     @Override
     public Flux<PSDCardAccountDTO> getCardAccountsByPartyId(UUID partyId) {
-        return Flux.error(new UnsupportedOperationException("Method getCardAccountsByPartyId not yet implemented"));
+        UUID cardId = SandboxSamples.id("card", SandboxSamples.text(partyId));
+        return Flux.just(card(cardId, partyId));
     }
 
     @Override
     public Mono<PSDCardAccountDTO> getCardAccountById(UUID cardId) {
-        return Mono.error(new UnsupportedOperationException("Method getCardAccountById not yet implemented"));
+        UUID ownerId = SandboxSamples.id("card-owner", SandboxSamples.text(cardId));
+        return Mono.just(card(cardId, ownerId));
     }
 
     @Override
     public Flux<PSDBalanceDTO> getBalancesByCardId(UUID cardId) {
-        return Flux.error(new UnsupportedOperationException("Method getBalancesByCardId not yet implemented"));
+        return Flux.just(DefaultAccountServiceAdapter.balance(new BigDecimal("250.00")));
     }
 
     @Override
     public Flux<PSDTransactionDTO> getTransactionsByCardId(UUID cardId, LocalDate fromDate, LocalDate toDate) {
-        return Flux.error(new UnsupportedOperationException("Method getTransactionsByCardId not yet implemented"));
+        UUID transactionId = SandboxSamples.id("card-transaction", SandboxSamples.text(cardId));
+        return Flux.just(DefaultTransactionServiceAdapter.transaction(transactionId, fromDate));
     }
 
     @Override
     public Mono<PSDTransactionDTO> getTransactionByCardIdAndTransactionId(UUID cardId, UUID transactionId) {
-        return Mono.error(new UnsupportedOperationException("Method getTransactionByCardIdAndTransactionId not yet implemented"));
+        return Mono.just(DefaultTransactionServiceAdapter.transaction(transactionId, null));
+    }
+
+    private static PSDCardAccountDTO card(UUID cardId, UUID ownerId) {
+        return PSDCardAccountDTO.builder()
+                .resourceId(cardId)
+                .ownerPartyId(ownerId)
+                .maskedPan("540905******0000")
+                .currency(SandboxSamples.SAMPLE_CURRENCY)
+                .name("Sandbox card")
+                .product("Sandbox debit card")
+                .status("enabled")
+                .creditLimit("500.00")
+                .cardType("debit")
+                .cardNetwork("visa")
+                .createdAt(SandboxSamples.SAMPLE_TIME)
+                .updatedAt(SandboxSamples.SAMPLE_TIME)
+                .build();
     }
 }

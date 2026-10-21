@@ -53,16 +53,16 @@ public class DefaultSCAServiceAdapter implements SCAServicePort {
      */
     @Override
     public Mono<PSDSCAAuthenticationResponseDTO> initiateSCA(PSDSCAAuthenticationRequestDTO request) {
-        log.debug("Initiating SCA for party ID: {}, resource: {}", request.getPartyId(), request.getResourceId());
-        
-        // In a real implementation, this would call the SCA service
-        // For now, we'll just return a mock response
+        String party = request == null || request.getPartyId() == null ? "absent" : request.getPartyId().toString();
+        String resource = request == null ? "absent" : String.valueOf(request.getResourceId());
+        String challengeId = "sca-" + SandboxSamples.id("sca-challenge", party + ":" + resource);
+        log.debug("Initiating SCA for party ID: {}, resource: {}", party, resource);
         return Mono.just(PSDSCAAuthenticationResponseDTO.builder()
-                .challengeId("sca-" + System.currentTimeMillis())
+                .challengeId(challengeId)
                 .method("SMS")
                 .maskedTarget("+49 *** *** 789")
                 .expiresIn(300)
-                .additionalInfo("An SMS has been sent to your registered mobile number")
+                .additionalInfo("Sandbox challenge issued")
                 .build());
     }
 
@@ -74,23 +74,21 @@ public class DefaultSCAServiceAdapter implements SCAServicePort {
      */
     @Override
     public Mono<PSDSCAValidationResponseDTO> validateSCA(PSDSCAValidationRequestDTO request) {
-        log.debug("Validating SCA for challenge ID: {}", request.getChallengeId());
-        
-        // In a real implementation, this would call the SCA service
-        // For now, we'll just return a mock response
-        // For demonstration purposes, we'll accept any code that is "123456"
-        if ("123456".equals(request.getAuthenticationCode())) {
-            return Mono.just(PSDSCAValidationResponseDTO.builder()
-                    .success(true)
-                    .authenticationToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...")
-                    .expiresIn(3600)
-                    .build());
-        } else {
+        String challengeId = request == null ? null : request.getChallengeId();
+        String submitted = request == null ? null : request.getAuthenticationCode();
+        log.debug("Validating SCA for challenge ID: {}", challengeId);
+        String expected = SandboxSamples.challengeCode(challengeId);
+        if (challengeId == null || challengeId.isBlank() || submitted == null || !expected.equals(submitted)) {
             return Mono.just(PSDSCAValidationResponseDTO.builder()
                     .success(false)
                     .errorMessage("Invalid authentication code")
                     .build());
         }
+        return Mono.just(PSDSCAValidationResponseDTO.builder()
+                .success(true)
+                .authenticationToken("sandbox-" + SandboxSamples.id("sca-token", challengeId))
+                .expiresIn(3600)
+                .build());
     }
 
     /**

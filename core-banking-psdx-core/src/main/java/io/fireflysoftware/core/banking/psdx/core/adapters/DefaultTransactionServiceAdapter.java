@@ -23,23 +23,39 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Default implementation of the TransactionServicePort.
- * This implementation throws exceptions as "not yet implemented".
+ * In-memory booked transaction. The same account or transaction id always returns the same record.
  */
 @Component
 public class DefaultTransactionServiceAdapter implements TransactionServicePort {
 
     @Override
     public Flux<PSDTransactionDTO> getTransactionsByAccountId(UUID accountId, LocalDate fromDate, LocalDate toDate) {
-        return Flux.error(new UnsupportedOperationException("Method getTransactionsByAccountId not yet implemented"));
+        UUID transactionId = SandboxSamples.id("transaction", SandboxSamples.text(accountId));
+        return Flux.just(transaction(transactionId, fromDate));
     }
 
     @Override
     public Mono<PSDTransactionDTO> getTransactionById(UUID transactionId) {
-        return Mono.error(new UnsupportedOperationException("Method getTransactionById not yet implemented"));
+        return Mono.just(transaction(transactionId, null));
+    }
+
+    static PSDTransactionDTO transaction(UUID transactionId, LocalDate bookingDate) {
+        LocalDate bookedOn = bookingDate != null ? bookingDate : SandboxSamples.SAMPLE_DATE;
+        return PSDTransactionDTO.builder()
+                .transactionId(transactionId)
+                .transactionStatus("booked")
+                .bookingDate(bookedOn)
+                .valueDate(bookedOn)
+                .creditorName("Sandbox merchant")
+                .transactionAmount(PSDTransactionDTO.PSDAmountDTO.builder()
+                        .currency(SandboxSamples.SAMPLE_CURRENCY)
+                        .amount(new BigDecimal("42.50"))
+                        .build())
+                .build();
     }
 }

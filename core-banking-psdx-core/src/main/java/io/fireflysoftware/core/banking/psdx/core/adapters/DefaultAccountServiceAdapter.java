@@ -24,27 +24,57 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 /**
- * Default implementation of the AccountServicePort.
- * This implementation throws exceptions as "not yet implemented".
+ * In-memory account sample. The same party or account id always returns the same record.
  */
 @Component
 public class DefaultAccountServiceAdapter implements AccountServicePort {
 
     @Override
     public Flux<PSDAccountDTO> getAccountsByPartyId(UUID partyId) {
-        return Flux.error(new UnsupportedOperationException("Method getAccountsByPartyId not yet implemented"));
+        UUID accountId = SandboxSamples.id("account", SandboxSamples.text(partyId));
+        return Flux.just(account(accountId, partyId));
     }
 
     @Override
     public Mono<PSDAccountDTO> getAccountById(UUID accountId) {
-        return Mono.error(new UnsupportedOperationException("Method getAccountById not yet implemented"));
+        UUID ownerId = SandboxSamples.id("owner", SandboxSamples.text(accountId));
+        return Mono.just(account(accountId, ownerId));
     }
 
     @Override
     public Flux<PSDBalanceDTO> getBalancesByAccountId(UUID accountId) {
-        return Flux.error(new UnsupportedOperationException("Method getBalancesByAccountId not yet implemented"));
+        return Flux.just(balance(new BigDecimal("125.00")));
+    }
+
+    private static PSDAccountDTO account(UUID accountId, UUID ownerId) {
+        return PSDAccountDTO.builder()
+                .resourceId(accountId)
+                .ownerPartyId(ownerId)
+                .iban(SandboxSamples.SAMPLE_IBAN)
+                .currency(SandboxSamples.SAMPLE_CURRENCY)
+                .name("Sandbox account")
+                .product("Sandbox current account")
+                .cashAccountType("CACC")
+                .status("enabled")
+                .bic("DEUTDEFF")
+                .createdAt(SandboxSamples.SAMPLE_TIME)
+                .updatedAt(SandboxSamples.SAMPLE_TIME)
+                .build();
+    }
+
+    static PSDBalanceDTO balance(BigDecimal amount) {
+        return PSDBalanceDTO.builder()
+                .balanceType("closingBooked")
+                .creditDebitIndicator("CRDT")
+                .referenceDate(SandboxSamples.SAMPLE_TIME)
+                .balanceAmount(PSDBalanceDTO.PSDAmountDTO.builder()
+                        .currency(SandboxSamples.SAMPLE_CURRENCY)
+                        .amount(amount)
+                        .build())
+                .build();
     }
 }
