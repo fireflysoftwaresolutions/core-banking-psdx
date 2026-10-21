@@ -3581,6 +3581,7 @@ components:
       type: object
       properties:
         consentStatus:
+          minLength: 1
           pattern: ^(received|valid|rejected|expired|revoked|terminated)$
           type: string
           description: Status of the consent
@@ -3777,6 +3778,8 @@ components:
           description: Authentication token for the validated session
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         expiresIn:
+          minimum: 0
+          exclusiveMinimum: true
           type: integer
           description: Expiry time of the token in seconds
           format: int32
@@ -3808,6 +3811,7 @@ components:
           description: ID of the resource being accessed
           example: payment-123456
         resourceType:
+          minLength: 1
           pattern: ^(PAYMENT|ACCOUNT|CONSENT|FUNDS_CONFIRMATION)$
           type: string
           description: Type of the resource being accessed
@@ -3840,6 +3844,7 @@ components:
           description: ID of the SCA challenge
           example: sca-123456
         method:
+          minLength: 1
           pattern: ^(SMS|EMAIL|PUSH|BIOMETRIC|HARDWARE_TOKEN|SOFTWARE_TOKEN)$
           type: string
           description: Authentication method used
@@ -3851,6 +3856,8 @@ components:
           description: Masked target of the authentication
           example: +49 *** *** 789
         expiresIn:
+          minimum: 0
+          exclusiveMinimum: true
           type: integer
           description: Expiry time of the challenge in seconds
           format: int32
@@ -3894,6 +3901,7 @@ components:
           description: National competent authority ID
           example: DE-BAFIN
         nationalCompetentAuthorityCountry:
+          minLength: 1
           pattern: "^[A-Z]{2}$"
           type: string
           description: National competent authority country
@@ -3906,6 +3914,7 @@ components:
           description: Redirect URI for the TPP
           example: https://fintech-solutions.com/callback
         providerType:
+          minLength: 1
           pattern: ^(AISP|PISP|CBPII|ASPSP)$
           type: string
           description: Type of the TPP
@@ -4054,6 +4063,7 @@ components:
       type: object
       properties:
         paymentType:
+          minLength: 1
           pattern: ^(sepa-credit-transfers|instant-sepa-credit-transfers|target-2-payments|cross-border-credit-transfers)$
           type: string
           description: Type of the payment
@@ -4150,6 +4160,7 @@ components:
           type: string
           description: ID of the customer who gives the consent
         consentType:
+          minLength: 1
           pattern: ^(account|payment|funds-confirmation)$
           type: string
           description: Type of consent
@@ -4164,12 +4175,16 @@ components:
           format: date-time
         frequencyPerDay:
           maximum: 1000
+          minimum: 0
+          exclusiveMinimum: true
           type: integer
           description: Frequency of access per day
           format: int32
           example: 4
         accessFrequency:
           maximum: 1000
+          minimum: 0
+          exclusiveMinimum: true
           type: integer
           description: Access frequency (alias for frequencyPerDay)
           format: int32
@@ -4221,11 +4236,13 @@ components:
           type: string
           description: ID of the third party provider
         accessType:
+          minLength: 1
           pattern: ^(READ|WRITE|DELETE)$
           type: string
           description: Type of access
           example: READ
         resourceType:
+          minLength: 1
           pattern: ^(ACCOUNT|PAYMENT|CONSENT|BALANCE|TRANSACTION|FUNDS_CONFIRMATION)$
           type: string
           description: Type of resource being accessed
@@ -4247,6 +4264,7 @@ components:
           description: User agent of the requester
           example: Mozilla/5.0
         status:
+          minLength: 1
           type: string
           description: Status of the access
           example: SUCCESS
@@ -4399,11 +4417,14 @@ components:
           description: Refresh token
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
         tokenType:
+          minLength: 1
           pattern: ^(Bearer|Basic)$
           type: string
           description: Token type
           example: Bearer
         expiresIn:
+          minimum: 0
+          exclusiveMinimum: true
           type: integer
           description: Expires in (seconds)
           format: int64
