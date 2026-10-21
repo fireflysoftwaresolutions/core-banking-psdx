@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Firefly Software Foundation
+ * Copyright 2026 Firefly Software Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,40 +14,33 @@
  * limitations under the License.
  */
 
-
 package io.fireflysoftware.core.banking.psdx.core.config;
 
-import io.fireflysoftware.core.banking.psdx.core.adapters.DefaultPaymentServiceAdapter;
+import io.fireflysoftware.core.banking.payments.sdk.api.PaymentOrdersApi;
+import io.fireflysoftware.core.banking.payments.sdk.invoker.ApiClient;
+import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxPaymentServiceAdapter;
+import io.fireflysoftware.core.banking.psdx.core.adapters.SdkCalls;
+import io.fireflysoftware.core.banking.psdx.core.adapters.SdkPaymentServiceAdapter;
 import io.fireflysoftware.core.banking.psdx.core.ports.PaymentServicePort;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
-/**
- * Configuration for the Payment service client.
- * This configuration provides a bean for the Payment service port.
- * In a real implementation, this would be replaced with a client for the core-banking-payment-hub service.
- */
 @Configuration
 public class PaymentServiceClientConfig {
 
-    @Value("${integration.payment-hub.enabled:false}")
-    private boolean paymentHubEnabled;
-
-    /**
-     * Create a bean for the Payment service port.
-     * If the Payment Hub service is enabled, this would return a client for that service.
-     * Otherwise, it returns the default adapter that throws "not yet implemented" exceptions.
-     *
-     * @param defaultAdapter The default adapter
-     * @return The Payment service port
-     */
     @Bean
-    @Primary
-    public PaymentServicePort paymentServicePort(DefaultPaymentServiceAdapter defaultAdapter) {
-        // In a real implementation, this would return a client for the core-banking-payment-hub service
-        // if paymentHubEnabled is true. For now, we'll just return the default adapter.
-        return defaultAdapter;
+    @ConditionalOnProperty(name = "integration.payment-hub.enabled", havingValue = "false", matchIfMissing = true)
+    public PaymentServicePort sandboxPaymentServicePort() {
+        return new SandboxPaymentServiceAdapter();
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "integration.payment-hub.enabled", havingValue = "true")
+    public PaymentServicePort corePaymentServicePort(@Value("${integration.payment-hub.base-url}") String baseUrl) {
+        ApiClient client = new ApiClient();
+        client.setBasePath(SdkCalls.base(baseUrl));
+        return new SdkPaymentServiceAdapter(new PaymentOrdersApi(client));
     }
 }

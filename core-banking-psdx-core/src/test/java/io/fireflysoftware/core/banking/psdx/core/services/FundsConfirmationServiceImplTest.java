@@ -17,23 +17,29 @@
 
 package io.fireflysoftware.core.banking.psdx.core.services;
 
+import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxAccountServiceAdapter;
 import io.fireflysoftware.core.banking.psdx.core.ports.AccountServicePort;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDAccountReferenceDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDAmountDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDFundsConfirmationDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.services.ConsentService;
+import io.fireflysoftware.core.banking.psdx.models.entities.FundsConfirmation;
+import io.fireflysoftware.core.banking.psdx.models.repositories.FundsConfirmationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,6 +50,9 @@ class FundsConfirmationServiceImplTest {
 
     @Mock
     private ConsentService consentService;
+
+    @Mock
+    private FundsConfirmationRepository fundsConfirmationRepository;
 
     @InjectMocks
     private FundsConfirmationServiceImpl fundsConfirmationService;
@@ -70,17 +79,17 @@ class FundsConfirmationServiceImplTest {
 
     @Test
     void confirmFunds_shouldReturnConfirmation_whenConsentIsValid() {
-        // Given
         when(consentService.validateConsent(CONSENT_ID, "FUNDS_CONFIRMATION", "READ")).thenReturn(Mono.just(true));
+        when(accountServicePort.balancesForReference("DE89370400440532013000"))
+                .thenReturn(Flux.just(SandboxAccountServiceAdapter.balance(new BigDecimal("125.00"))));
+        when(fundsConfirmationRepository.save(any(FundsConfirmation.class)))
+                .thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
 
-        // When & Then
         StepVerifier.create(fundsConfirmationService.confirmFunds(CONSENT_ID, fundsConfirmationRequest))
-                .expectNextMatches(confirmation -> {
-                    return confirmation.getFundsConfirmationId() != null &&
-                           confirmation.getConsentId().equals(CONSENT_ID) &&
-                           confirmation.getFundsAvailable() != null &&
-                           confirmation.getConfirmationDateTime() != null;
-                })
+                .expectNextMatches(confirmation -> confirmation.getFundsConfirmationId() != null
+                        && confirmation.getConsentId().equals(CONSENT_ID)
+                        && Boolean.TRUE.equals(confirmation.getFundsAvailable())
+                        && confirmation.getConfirmationDateTime() != null)
                 .verifyComplete();
     }
 
@@ -97,17 +106,19 @@ class FundsConfirmationServiceImplTest {
 
     @Test
     void getFundsConfirmation_shouldReturnConfirmation_whenConsentIsValid() {
-        // Given
         when(consentService.validateConsent(CONSENT_ID, "FUNDS_CONFIRMATION", "READ")).thenReturn(Mono.just(true));
+        when(fundsConfirmationRepository.findById(FUNDS_CONFIRMATION_ID)).thenReturn(Mono.just(FundsConfirmation.builder()
+                .id(FUNDS_CONFIRMATION_ID)
+                .consentId(CONSENT_ID)
+                .fundsAvailable(true)
+                .confirmationDateTime(LocalDateTime.parse("2026-01-15T09:00:00"))
+                .build()));
 
-        // When & Then
         StepVerifier.create(fundsConfirmationService.getFundsConfirmation(CONSENT_ID, FUNDS_CONFIRMATION_ID))
-                .expectNextMatches(confirmation -> {
-                    return confirmation.getFundsConfirmationId().equals(FUNDS_CONFIRMATION_ID) &&
-                           confirmation.getConsentId().equals(CONSENT_ID) &&
-                           confirmation.getFundsAvailable() != null &&
-                           confirmation.getConfirmationDateTime() != null;
-                })
+                .expectNextMatches(confirmation -> confirmation.getFundsConfirmationId().equals(FUNDS_CONFIRMATION_ID)
+                        && confirmation.getConsentId().equals(CONSENT_ID)
+                        && Boolean.TRUE.equals(confirmation.getFundsAvailable())
+                        && confirmation.getConfirmationDateTime() != null)
                 .verifyComplete();
     }
 

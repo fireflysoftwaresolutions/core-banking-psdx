@@ -33,10 +33,10 @@ class SandboxAdapterTest {
 
     @Test
     void accountCardTransactionAndPaymentSamplesFinishWithoutThrowing() {
-        var accounts = new DefaultAccountServiceAdapter();
-        var cards = new DefaultCardServiceAdapter();
-        var transactions = new DefaultTransactionServiceAdapter();
-        var payments = new DefaultPaymentServiceAdapter();
+        var accounts = new SandboxAccountServiceAdapter();
+        var cards = new SandboxCardServiceAdapter();
+        var transactions = new SandboxTransactionServiceAdapter();
+        var payments = new SandboxPaymentServiceAdapter();
 
         StepVerifier.create(accounts.getAccountsByPartyId(PARTY_ID))
                 .assertNext(account -> assertThat(account.getOwnerPartyId()).isEqualTo(PARTY_ID))
@@ -71,13 +71,14 @@ class SandboxAdapterTest {
 
     @Test
     void scaRejectsTheLiteralChallengeCode() {
-        var sca = new DefaultSCAServiceAdapter();
+        var sca = new SandboxSCAServiceAdapter();
         var issued = sca.initiateSCA(request()).block();
         assertThat(SandboxSamples.challengeCode(issued.getChallengeId())).isNotEqualTo("123456");
+        assertThat(SandboxSamples.challengeCode(issued.getChallengeId())).isNotEqualToIgnoringCase("sandbox");
 
         var rejected = new PSDSCAValidationRequestDTO();
         rejected.setChallengeId(issued.getChallengeId());
-        rejected.setAuthenticationCode("123456");
+        rejected.setAuthenticationCode("sandbox");
         StepVerifier.create(sca.validateSCA(rejected))
                 .assertNext(result -> assertThat(result.getSuccess()).isFalse())
                 .verifyComplete();

@@ -18,7 +18,9 @@
 package io.fireflysoftware.core.banking.psdx.web.interceptors;
 
 import io.fireflysoftware.core.banking.psdx.core.services.ConsentValidationService;
+import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDThirdPartyProviderDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.enums.ResourceType;
+import io.fireflysoftware.core.banking.psdx.interfaces.services.ThirdPartyProviderService;
 import io.fireflysoftware.core.banking.psdx.interfaces.exceptions.PSDConsentInvalidException;
 import io.fireflysoftware.core.banking.psdx.interfaces.exceptions.PSDFormatException;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,6 +51,9 @@ class ConsentValidationInterceptorTest {
     private ConsentValidationService consentValidationService;
 
     @Mock
+    private ThirdPartyProviderService thirdPartyProviderService;
+
+    @Mock
     private WebFilterChain chain;
 
     private ConsentValidationInterceptor interceptor;
@@ -56,11 +61,15 @@ class ConsentValidationInterceptorTest {
     // Test constants
     private static final String VALID_CONSENT_ID = "550e8400-e29b-41d4-a716-446655440000";
     private static final String VALID_PARTY_ID = "550e8400-e29b-41d4-a716-446655440001";
+    private static final UUID PROVIDER_ID = UUID.fromString("550e8400-e29b-41d4-a716-446655440002");
 
     @BeforeEach
     void setUp() {
-        interceptor = new ConsentValidationInterceptor(consentValidationService);
+        interceptor = new ConsentValidationInterceptor(consentValidationService, thirdPartyProviderService);
         lenient().when(chain.filter(any())).thenReturn(Mono.empty());
+        PSDThirdPartyProviderDTO provider = new PSDThirdPartyProviderDTO();
+        provider.setId(PROVIDER_ID);
+        lenient().when(thirdPartyProviderService.validateApiKey("api-key-123")).thenReturn(Mono.just(provider));
     }
 
     @Test
@@ -187,7 +196,7 @@ class ConsentValidationInterceptorTest {
                 .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        when(consentValidationService.validateConsent(any(UUID.class), any(ResourceType.class), any(UUID.class), eq("api-key-123")))
+        when(consentValidationService.validateConsent(any(UUID.class), any(ResourceType.class), any(UUID.class), eq(PROVIDER_ID.toString())))
                 .thenReturn(Mono.just(true));
 
         // When
@@ -209,7 +218,7 @@ class ConsentValidationInterceptorTest {
                 .build();
         MockServerWebExchange exchange = MockServerWebExchange.from(request);
 
-        when(consentValidationService.validateConsent(any(UUID.class), any(ResourceType.class), any(UUID.class), eq("api-key-123")))
+        when(consentValidationService.validateConsent(any(UUID.class), any(ResourceType.class), any(UUID.class), eq(PROVIDER_ID.toString())))
                 .thenReturn(Mono.just(false));
 
         // When

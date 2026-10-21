@@ -22,28 +22,29 @@ import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDSCAAuthentication
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDSCAAuthenticationResponseDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDSCAValidationRequestDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDSCAValidationResponseDTO;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
- * Default adapter for the SCA service.
- * This is a simplified implementation for demonstration purposes.
- * In a real application, this would be replaced with a client for the SCA service.
+ * In-memory SCA sample. The same party and resource always issue the same challenge.
+ * Selected only when {@code integration.sca-mgmt.enabled} is unset.
  */
-@Component
-@Slf4j
-public class DefaultSCAServiceAdapter implements SCAServicePort {
+public class SandboxSCAServiceAdapter implements SCAServicePort {
 
-    @Value("${psdx.sca.required-for-all-payments:true}")
-    private boolean scaRequiredForAllPayments;
+    private final boolean scaRequiredForAllPayments;
+    private final double scaExemptionThresholdAmount;
+    private final String scaExemptionThresholdCurrency;
 
-    @Value("${psdx.sca.exemption-threshold-amount:30.00}")
-    private double scaExemptionThresholdAmount;
+    public SandboxSCAServiceAdapter() {
+        this(true, 30.00, "EUR");
+    }
 
-    @Value("${psdx.sca.exemption-threshold-currency:EUR}")
-    private String scaExemptionThresholdCurrency;
+    public SandboxSCAServiceAdapter(boolean scaRequiredForAllPayments,
+                                     double scaExemptionThresholdAmount,
+                                     String scaExemptionThresholdCurrency) {
+        this.scaRequiredForAllPayments = scaRequiredForAllPayments;
+        this.scaExemptionThresholdAmount = scaExemptionThresholdAmount;
+        this.scaExemptionThresholdCurrency = scaExemptionThresholdCurrency;
+    }
 
     /**
      * Initiate SCA for a customer.
@@ -56,7 +57,6 @@ public class DefaultSCAServiceAdapter implements SCAServicePort {
         String party = request == null || request.getPartyId() == null ? "absent" : request.getPartyId().toString();
         String resource = request == null ? "absent" : String.valueOf(request.getResourceId());
         String challengeId = "sca-" + SandboxSamples.id("sca-challenge", party + ":" + resource);
-        log.debug("Initiating SCA for party ID: {}, resource: {}", party, resource);
         return Mono.just(PSDSCAAuthenticationResponseDTO.builder()
                 .challengeId(challengeId)
                 .method("SMS")
@@ -76,9 +76,9 @@ public class DefaultSCAServiceAdapter implements SCAServicePort {
     public Mono<PSDSCAValidationResponseDTO> validateSCA(PSDSCAValidationRequestDTO request) {
         String challengeId = request == null ? null : request.getChallengeId();
         String submitted = request == null ? null : request.getAuthenticationCode();
-        log.debug("Validating SCA for challenge ID: {}", challengeId);
         String expected = SandboxSamples.challengeCode(challengeId);
-        if (challengeId == null || challengeId.isBlank() || submitted == null || !expected.equals(submitted)) {
+        if (challengeId == null || challengeId.isBlank() || submitted == null
+                || "sandbox".equalsIgnoreCase(submitted) || !expected.equals(submitted)) {
             return Mono.just(PSDSCAValidationResponseDTO.builder()
                     .success(false)
                     .errorMessage("Invalid authentication code")
@@ -100,8 +100,6 @@ public class DefaultSCAServiceAdapter implements SCAServicePort {
      */
     @Override
     public Mono<Boolean> isSCARequired(Double amount, String currency) {
-        log.debug("Checking if SCA is required for amount: {} {}", amount, currency);
-        
         // If SCA is required for all payments, return true
         if (scaRequiredForAllPayments) {
             return Mono.just(true);

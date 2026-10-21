@@ -47,10 +47,11 @@ final class SandboxSamples {
      * Code derived from a challenge id. The literal challenge code 123456 is never produced.
      */
     static String challengeCode(String challengeId) {
-        String derived = id("sca-code", challengeId).toString().replace("-", "").substring(0, 8);
-        if ("123456".equals(derived)) {
-            return "sandbox";
+        String derived = id("sca-code", challengeId).toString().replace("-", "");
+        String code = derived.substring(0, 8);
+        if ("123456".equals(code) || "sandbox".equalsIgnoreCase(code)) {
+            code = derived.substring(8, 16);
         }
-        return derived;
+        return code;
     }
 }

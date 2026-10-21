@@ -26,6 +26,30 @@
             <groupId>io.fireflysoftware</groupId>
             <artifactId>core-banking-psdx-models</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.fireflysoftware</groupId>
+            <artifactId>core-banking-accounts-sdk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.fireflysoftware</groupId>
+            <artifactId>core-banking-cards-sdk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.fireflysoftware</groupId>
+            <artifactId>core-banking-ledger-sdk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.fireflysoftware</groupId>
+            <artifactId>core-banking-payments-sdk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.fireflysoftware</groupId>
+            <artifactId>core-common-contract-mgmt-sdk</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.fireflysoftware</groupId>
+            <artifactId>core-common-sca-mgmt-sdk</artifactId>
+        </dependency>
 
         <!-- Common Libraries -->
         <dependency>

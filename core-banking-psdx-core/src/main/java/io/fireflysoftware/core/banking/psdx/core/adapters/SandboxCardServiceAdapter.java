@@ -21,7 +21,6 @@ import io.fireflysoftware.core.banking.psdx.core.ports.CardServicePort;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDBalanceDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDCardAccountDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDTransactionDTO;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -32,8 +31,7 @@ import java.util.UUID;
 /**
  * In-memory card sample. The same party, card, or transaction id always returns the same record.
  */
-@Component
-public class DefaultCardServiceAdapter implements CardServicePort {
+public class SandboxCardServiceAdapter implements CardServicePort {
 
     @Override
     public Flux<PSDCardAccountDTO> getCardAccountsByPartyId(UUID partyId) {
@@ -49,18 +47,18 @@ public class DefaultCardServiceAdapter implements CardServicePort {
 
     @Override
     public Flux<PSDBalanceDTO> getBalancesByCardId(UUID cardId) {
-        return Flux.just(DefaultAccountServiceAdapter.balance(new BigDecimal("250.00")));
+        return Flux.just(SandboxAccountServiceAdapter.balance(new BigDecimal("250.00")));
     }
 
     @Override
     public Flux<PSDTransactionDTO> getTransactionsByCardId(UUID cardId, LocalDate fromDate, LocalDate toDate) {
         UUID transactionId = SandboxSamples.id("card-transaction", SandboxSamples.text(cardId));
-        return Flux.just(DefaultTransactionServiceAdapter.transaction(transactionId, fromDate));
+        return Flux.just(SandboxTransactionServiceAdapter.transaction(transactionId, fromDate));
     }
 
     @Override
     public Mono<PSDTransactionDTO> getTransactionByCardIdAndTransactionId(UUID cardId, UUID transactionId) {
-        return Mono.just(DefaultTransactionServiceAdapter.transaction(transactionId, null));
+        return Mono.just(SandboxTransactionServiceAdapter.transaction(transactionId, null));
     }
 
     private static PSDCardAccountDTO card(UUID cardId, UUID ownerId) {

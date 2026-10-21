@@ -19,7 +19,6 @@ package io.fireflysoftware.core.banking.psdx.core.adapters;
 
 import io.fireflysoftware.core.banking.psdx.core.ports.TransactionServicePort;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDTransactionDTO;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -30,8 +29,7 @@ import java.util.UUID;
 /**
  * In-memory booked transaction. The same account or transaction id always returns the same record.
  */
-@Component
-public class DefaultTransactionServiceAdapter implements TransactionServicePort {
+public class SandboxTransactionServiceAdapter implements TransactionServicePort {
 
     @Override
     public Flux<PSDTransactionDTO> getTransactionsByAccountId(UUID accountId, LocalDate fromDate, LocalDate toDate) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Firefly Software Foundation
+ * Copyright 2026 Firefly Software Foundation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,40 +14,46 @@
  * limitations under the License.
  */
 
-
 package io.fireflysoftware.core.banking.psdx.core.config;
 
-import io.fireflysoftware.core.banking.psdx.core.adapters.DefaultSCAServiceAdapter;
+import io.fireflysoftware.common.sca.sdk.api.ScaChallengeControllerApi;
+import io.fireflysoftware.common.sca.sdk.api.ScaOperationControllerApi;
+import io.fireflysoftware.common.sca.sdk.invoker.ApiClient;
+import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxSCAServiceAdapter;
+import io.fireflysoftware.core.banking.psdx.core.adapters.SdkCalls;
+import io.fireflysoftware.core.banking.psdx.core.adapters.SdkScaServiceAdapter;
 import io.fireflysoftware.core.banking.psdx.core.ports.SCAServicePort;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
-/**
- * Configuration for the SCA service client.
- * This configuration provides a bean for the SCA service port.
- * In a real implementation, this would be replaced with a client for the core-common-sca-mgmt service.
- */
 @Configuration
 public class SCAServiceClientConfig {
 
-    @Value("${integration.sca-mgmt.enabled:false}")
-    private boolean scaMgmtEnabled;
-
-    /**
-     * Create a bean for the SCA service port.
-     * If the SCA Management service is enabled, this would return a client for that service.
-     * Otherwise, it returns the default adapter that provides mock responses.
-     *
-     * @param defaultAdapter The default adapter
-     * @return The SCA service port
-     */
     @Bean
-    @Primary
-    public SCAServicePort scaServicePort(DefaultSCAServiceAdapter defaultAdapter) {
-        // In a real implementation, this would return a client for the core-common-sca-mgmt service
-        // if scaMgmtEnabled is true. For now, we'll just return the default adapter.
-        return defaultAdapter;
+    @ConditionalOnProperty(name = "integration.sca-mgmt.enabled", havingValue = "false", matchIfMissing = true)
+    public SCAServicePort sandboxScaServicePort(
+            @Value("${psdx.sca.required-for-all-payments:true}") boolean required,
+            @Value("${psdx.sca.exemption-threshold-amount:30.00}") double amount,
+            @Value("${psdx.sca.exemption-threshold-currency:EUR}") String currency) {
+        return new SandboxSCAServiceAdapter(required, amount, currency);
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "integration.sca-mgmt.enabled", havingValue = "true")
+    public SCAServicePort coreScaServicePort(
+            @Value("${integration.sca-mgmt.base-url}") String baseUrl,
+            @Value("${psdx.sca.required-for-all-payments:true}") boolean required,
+            @Value("${psdx.sca.exemption-threshold-amount:30.00}") double amount,
+            @Value("${psdx.sca.exemption-threshold-currency:EUR}") String currency) {
+        ApiClient client = new ApiClient();
+        client.setBasePath(SdkCalls.base(baseUrl));
+        return new SdkScaServiceAdapter(
+                new ScaOperationControllerApi(client),
+                new ScaChallengeControllerApi(client),
+                required,
+                amount,
+                currency);
     }
 }

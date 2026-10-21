@@ -21,7 +21,6 @@ import io.fireflysoftware.core.banking.psdx.core.ports.PaymentServicePort;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDPaymentDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDPaymentInitiationRequestDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDPaymentStatusDTO;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -30,8 +29,7 @@ import java.util.UUID;
 /**
  * In-memory completed payment. The same request or payment id always returns the same record.
  */
-@Component
-public class DefaultPaymentServiceAdapter implements PaymentServicePort {
+public class SandboxPaymentServiceAdapter implements PaymentServicePort {
 
     private static final String COMPLETED = "ACSC";
 

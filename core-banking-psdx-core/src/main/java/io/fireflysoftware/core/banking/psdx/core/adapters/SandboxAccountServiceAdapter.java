@@ -20,7 +20,6 @@ package io.fireflysoftware.core.banking.psdx.core.adapters;
 import io.fireflysoftware.core.banking.psdx.core.ports.AccountServicePort;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDAccountDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDBalanceDTO;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -30,8 +29,7 @@ import java.util.UUID;
 /**
  * In-memory account sample. The same party or account id always returns the same record.
  */
-@Component
-public class DefaultAccountServiceAdapter implements AccountServicePort {
+public class SandboxAccountServiceAdapter implements AccountServicePort {
 
     @Override
     public Flux<PSDAccountDTO> getAccountsByPartyId(UUID partyId) {
@@ -47,6 +45,18 @@ public class DefaultAccountServiceAdapter implements AccountServicePort {
 
     @Override
     public Flux<PSDBalanceDTO> getBalancesByAccountId(UUID accountId) {
+        return Flux.just(balance(new BigDecimal("125.00")));
+    }
+
+    @Override
+    public Flux<PSDBalanceDTO> balancesForReference(String accountReference) {
+        if (accountReference == null) {
+            return Flux.empty();
+        }
+        String compact = accountReference.replace(" ", "");
+        if (!SandboxSamples.SAMPLE_IBAN.equals(compact)) {
+            return Flux.empty();
+        }
         return Flux.just(balance(new BigDecimal("125.00")));
     }
 
@@ -66,7 +76,7 @@ public class DefaultAccountServiceAdapter implements AccountServicePort {
                 .build();
     }
 
-    static PSDBalanceDTO balance(BigDecimal amount) {
+    public static PSDBalanceDTO balance(BigDecimal amount) {
         return PSDBalanceDTO.builder()
                 .balanceType("closingBooked")
                 .creditDebitIndicator("CRDT")

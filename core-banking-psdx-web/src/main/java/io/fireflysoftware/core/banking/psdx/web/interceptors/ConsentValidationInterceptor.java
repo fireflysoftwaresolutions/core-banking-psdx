@@ -18,6 +18,7 @@
 package io.fireflysoftware.core.banking.psdx.web.interceptors;
 
 import io.fireflysoftware.core.banking.psdx.core.services.ConsentValidationService;
+import io.fireflysoftware.core.banking.psdx.interfaces.services.ThirdPartyProviderService;
 import io.fireflysoftware.core.banking.psdx.interfaces.enums.ResourceType;
 import io.fireflysoftware.core.banking.psdx.interfaces.exceptions.PSDConsentInvalidException;
 import io.fireflysoftware.core.banking.psdx.interfaces.exceptions.PSDFormatException;
@@ -43,6 +44,7 @@ import java.util.UUID;
 public class ConsentValidationInterceptor implements WebFilter {
 
     private final ConsentValidationService consentValidationService;
+    private final ThirdPartyProviderService thirdPartyProviderService;
 
     private static final List<String> PUBLIC_PATHS = Arrays.asList(
             "/api/v1/auth/token",
@@ -91,31 +93,30 @@ public class ConsentValidationInterceptor implements WebFilter {
             return Mono.error(new PSDFormatException("Invalid X-Consent-ID header", "The consent ID must be a valid UUID"));
         }
 
-        // Get party ID from request parameter or header
-        UUID partyId = getPartyId(exchange.getRequest());
+        UUID partyId = partyId(exchange.getRequest());
         if (partyId == null) {
             log.warn("Missing party ID for path: {}", path);
             return Mono.error(new PSDFormatException("Missing party ID", "Please provide a valid party ID in the request parameters or PSU-ID header"));
         }
 
-        // Get third party ID from security context or header
-        String thirdPartyId = getThirdPartyId(exchange.getRequest());
-        if (thirdPartyId == null) {
+        String apiKey = exchange.getRequest().getHeaders().getFirst("X-API-KEY");
+        if (apiKey == null || apiKey.isBlank()) {
             log.warn("Missing third party ID for path: {}", path);
             return Mono.error(new PSDFormatException("Missing third party ID", "Please provide a valid API key in the X-API-KEY header"));
         }
 
-        // Determine resource type from path
         ResourceType resourceType = getResourceTypeFromPath(path);
 
-        // Validate consent
-        return consentValidationService.validateConsent(consentId, resourceType, partyId, thirdPartyId)
+        return thirdPartyProviderService.validateApiKey(apiKey)
+                .switchIfEmpty(Mono.error(new PSDFormatException("Unknown API key", "The API key is not a registered provider")))
+                .flatMap(provider -> consentValidationService.validateConsent(
+                        consentId, resourceType, partyId, provider.getId().toString()))
                 .flatMap(isValid -> {
                     if (isValid) {
                         return chain.filter(exchange);
                     } else {
-                        log.warn("Invalid consent ID: {} for resource type: {}, party ID: {}, third party ID: {}",
-                                consentId, resourceType, partyId, thirdPartyId);
+                        log.warn("Invalid consent ID: {} for resource type: {}, party ID: {}",
+                                consentId, resourceType, partyId);
                         return Mono.error(new PSDConsentInvalidException(
                                 "Invalid consent",
                                 "The provided consent is invalid, expired, or does not grant access to the requested resource"));
@@ -152,45 +153,25 @@ public class ConsentValidationInterceptor implements WebFilter {
      * @param request The request
      * @return The party ID, or null if not found
      */
-    private UUID getPartyId(ServerHttpRequest request) {
-        // Try to get from query parameter
+    private UUID partyId(ServerHttpRequest request) {
         String partyIdParam = request.getQueryParams().getFirst("partyId");
         if (partyIdParam != null && !partyIdParam.isEmpty()) {
-            try {
-                return UUID.fromString(partyIdParam);
-            } catch (IllegalArgumentException e) {
-                log.warn("Invalid party ID parameter: {}", partyIdParam);
-                return null;
-            }
+            return parseParty(partyIdParam);
         }
-
-        // Try to get from PSU-ID header
         String psuId = request.getHeaders().getFirst("PSU-ID");
         if (psuId != null && !psuId.isEmpty()) {
-            // In a real implementation, this would look up the party ID from the PSU ID
-            // For now, we'll just return a dummy value
-            return UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
+            return parseParty(psuId);
         }
-
         return null;
     }
 
-    /**
-     * Get the third party ID from the request.
-     *
-     * @param request The request
-     * @return The third party ID, or null if not found
-     */
-    private String getThirdPartyId(ServerHttpRequest request) {
-        // Try to get from X-API-KEY header
-        String apiKey = request.getHeaders().getFirst("X-API-KEY");
-        if (apiKey != null && !apiKey.isEmpty()) {
-            // In a real implementation, this would look up the third party ID from the API key
-            // For now, we'll just return the API key
-            return apiKey;
+    private UUID parseParty(String value) {
+        try {
+            return UUID.fromString(value);
+        } catch (IllegalArgumentException ex) {
+            log.warn("Party id is not a UUID: {}", value);
+            return null;
         }
-
-        return null;
     }
 
     /**

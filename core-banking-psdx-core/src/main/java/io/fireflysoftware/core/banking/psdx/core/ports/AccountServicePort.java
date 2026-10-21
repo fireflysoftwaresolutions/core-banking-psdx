@@ -52,4 +52,9 @@ public interface AccountServicePort {
      * @return A Flux of balances
      */
     Flux<PSDBalanceDTO> getBalancesByAccountId(UUID accountId);
+
+    /**
+     * Balances for an account number or IBAN. Empty when the account is unknown.
+     */
+    Flux<PSDBalanceDTO> balancesForReference(String accountReference);
 }
