@@ -16,7 +16,6 @@
 
 package io.fireflysoftware.core.banking.psdx.core.adapters;
 
-import io.fireflysoftware.core.banking.ledger.sdk.api.AccountTransactionsApi;
 import io.fireflysoftware.core.banking.ledger.sdk.api.TransactionsApi;
 import io.fireflysoftware.core.banking.ledger.sdk.model.TransactionDTO;
 import io.fireflysoftware.core.banking.psdx.core.ports.TransactionServicePort;
@@ -33,11 +32,9 @@ import java.util.UUID;
 public final class SdkTransactionServiceAdapter implements TransactionServicePort {
 
     private final TransactionsApi transactions;
-    private final AccountTransactionsApi byAccount;
 
-    public SdkTransactionServiceAdapter(TransactionsApi transactions, AccountTransactionsApi byAccount) {
+    public SdkTransactionServiceAdapter(TransactionsApi transactions) {
         this.transactions = transactions;
-        this.byAccount = byAccount;
     }
 
     @Override
@@ -45,7 +42,7 @@ public final class SdkTransactionServiceAdapter implements TransactionServicePor
         if (accountId == null) {
             return Flux.empty();
         }
-        return byAccount.listByAccount(accountId)
+        return transactions.listTransactionsByAccount(accountId, SdkCalls.key())
                 .map(this::toTransaction)
                 .filter(transaction -> within(transaction, fromDate, toDate));
     }
