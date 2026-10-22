@@ -26,7 +26,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * In-memory SCA sample. The same party and resource always issue the same challenge.
- * Selected only when {@code integration.sca-mgmt.enabled} is unset.
+ * Live challenges are issued by domain-banking-psdx.
  */
 public class SandboxSCAServiceAdapter implements SCAServicePort {
 

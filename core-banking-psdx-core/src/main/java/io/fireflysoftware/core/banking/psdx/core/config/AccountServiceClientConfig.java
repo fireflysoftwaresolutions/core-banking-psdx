@@ -16,44 +16,20 @@
 
 package io.fireflysoftware.core.banking.psdx.core.config;
 
-import io.fireflysoftware.core.banking.accounts.sdk.api.AccountBalancesApi;
-import io.fireflysoftware.core.banking.accounts.sdk.api.AccountsApi;
-import io.fireflysoftware.core.banking.accounts.sdk.invoker.ApiClient;
 import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxAccountServiceAdapter;
-import io.fireflysoftware.core.banking.psdx.core.adapters.SdkAccountServiceAdapter;
-import io.fireflysoftware.core.banking.psdx.core.adapters.SdkCalls;
 import io.fireflysoftware.core.banking.psdx.core.ports.AccountServicePort;
-import io.fireflysoftware.core.contract.sdk.api.GlobalContractPartiesApi;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Sandbox accounts when {@code integration.accounts.enabled} is unset. The live bean calls the published SDKs.
+ * Account rows live in core-banking-accounts. This core keeps the sandbox sample and does not call that core.
+ * domain-banking-psdx reads accounts and contract parties.
  */
 @Configuration
 public class AccountServiceClientConfig {
 
     @Bean
-    @ConditionalOnProperty(name = "integration.accounts.enabled", havingValue = "false", matchIfMissing = true)
-    public AccountServicePort sandboxAccountServicePort() {
+    public AccountServicePort accountServicePort() {
         return new SandboxAccountServiceAdapter();
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = "integration.accounts.enabled", havingValue = "true")
-    public AccountServicePort coreAccountServicePort(
-            @Value("${integration.accounts.base-url}") String accountsUrl,
-            @Value("${integration.contracts.base-url}") String contractsUrl) {
-        ApiClient accountsClient = new ApiClient();
-        accountsClient.setBasePath(SdkCalls.base(accountsUrl));
-        io.fireflysoftware.core.contract.sdk.invoker.ApiClient contractsClient =
-                new io.fireflysoftware.core.contract.sdk.invoker.ApiClient();
-        contractsClient.setBasePath(SdkCalls.base(contractsUrl));
-        return new SdkAccountServiceAdapter(
-                new AccountsApi(accountsClient),
-                new AccountBalancesApi(accountsClient),
-                new GlobalContractPartiesApi(contractsClient));
     }
 }

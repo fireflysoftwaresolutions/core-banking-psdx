@@ -16,33 +16,20 @@
 
 package io.fireflysoftware.core.banking.psdx.core.config;
 
-import io.fireflysoftware.core.banking.cards.sdk.api.CardBalancesApi;
-import io.fireflysoftware.core.banking.cards.sdk.api.CardTransactionsApi;
-import io.fireflysoftware.core.banking.cards.sdk.api.CardsApi;
-import io.fireflysoftware.core.banking.cards.sdk.invoker.ApiClient;
 import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxCardServiceAdapter;
-import io.fireflysoftware.core.banking.psdx.core.adapters.SdkCalls;
-import io.fireflysoftware.core.banking.psdx.core.adapters.SdkCardServiceAdapter;
 import io.fireflysoftware.core.banking.psdx.core.ports.CardServicePort;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Card rows live in core-banking-cards. This core keeps the sandbox sample.
+ * domain-banking-psdx reads cards.
+ */
 @Configuration
 public class CardServiceClientConfig {
 
     @Bean
-    @ConditionalOnProperty(name = "integration.cards.enabled", havingValue = "false", matchIfMissing = true)
-    public CardServicePort sandboxCardServicePort() {
+    public CardServicePort cardServicePort() {
         return new SandboxCardServiceAdapter();
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = "integration.cards.enabled", havingValue = "true")
-    public CardServicePort coreCardServicePort(@Value("${integration.cards.base-url}") String baseUrl) {
-        ApiClient client = new ApiClient();
-        client.setBasePath(SdkCalls.base(baseUrl));
-        return new SdkCardServiceAdapter(new CardsApi(client), new CardBalancesApi(client), new CardTransactionsApi(client));
     }
 }

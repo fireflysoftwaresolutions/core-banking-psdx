@@ -16,31 +16,20 @@
 
 package io.fireflysoftware.core.banking.psdx.core.config;
 
-import io.fireflysoftware.core.banking.ledger.sdk.api.TransactionsApi;
-import io.fireflysoftware.core.banking.ledger.sdk.invoker.ApiClient;
 import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxTransactionServiceAdapter;
-import io.fireflysoftware.core.banking.psdx.core.adapters.SdkCalls;
-import io.fireflysoftware.core.banking.psdx.core.adapters.SdkTransactionServiceAdapter;
 import io.fireflysoftware.core.banking.psdx.core.ports.TransactionServicePort;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Ledger transactions live in core-banking-ledger. This core keeps the sandbox sample.
+ * domain-banking-psdx reads the ledger.
+ */
 @Configuration
 public class TransactionServiceClientConfig {
 
     @Bean
-    @ConditionalOnProperty(name = "integration.ledger.enabled", havingValue = "false", matchIfMissing = true)
-    public TransactionServicePort sandboxTransactionServicePort() {
+    public TransactionServicePort transactionServicePort() {
         return new SandboxTransactionServiceAdapter();
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = "integration.ledger.enabled", havingValue = "true")
-    public TransactionServicePort coreTransactionServicePort(@Value("${integration.ledger.base-url}") String baseUrl) {
-        ApiClient client = new ApiClient();
-        client.setBasePath(SdkCalls.base(baseUrl));
-        return new SdkTransactionServiceAdapter(new TransactionsApi(client));
     }
 }

@@ -16,31 +16,20 @@
 
 package io.fireflysoftware.core.banking.psdx.core.config;
 
-import io.fireflysoftware.core.banking.payments.sdk.api.PaymentOrdersApi;
-import io.fireflysoftware.core.banking.payments.sdk.invoker.ApiClient;
 import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxPaymentServiceAdapter;
-import io.fireflysoftware.core.banking.psdx.core.adapters.SdkCalls;
-import io.fireflysoftware.core.banking.psdx.core.adapters.SdkPaymentServiceAdapter;
 import io.fireflysoftware.core.banking.psdx.core.ports.PaymentServicePort;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Payment orders live in core-banking-payments. This core keeps the sandbox sample.
+ * domain-banking-psdx creates and reads payment orders.
+ */
 @Configuration
 public class PaymentServiceClientConfig {
 
     @Bean
-    @ConditionalOnProperty(name = "integration.payment-hub.enabled", havingValue = "false", matchIfMissing = true)
-    public PaymentServicePort sandboxPaymentServicePort() {
+    public PaymentServicePort paymentServicePort() {
         return new SandboxPaymentServiceAdapter();
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = "integration.payment-hub.enabled", havingValue = "true")
-    public PaymentServicePort corePaymentServicePort(@Value("${integration.payment-hub.base-url}") String baseUrl) {
-        ApiClient client = new ApiClient();
-        client.setBasePath(SdkCalls.base(baseUrl));
-        return new SdkPaymentServiceAdapter(new PaymentOrdersApi(client));
     }
 }
