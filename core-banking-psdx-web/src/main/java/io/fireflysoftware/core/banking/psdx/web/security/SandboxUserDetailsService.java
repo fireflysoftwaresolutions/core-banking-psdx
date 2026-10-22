@@ -32,13 +32,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * In-memory staff users. Selected only when {@code integration.identity.enabled} is unset.
- * core-common-user-mgmt does not publish a password, so a live bean is not invented here.
+ * In-memory staff users {@code admin} and {@code user}. Selected only while
+ * {@code integration.identity.enabled} is unset. This adapter does not open a socket.
+ * The live bean is {@link SdkStaffIdentityAdapter}.
  */
 @Service
 @ConditionalOnProperty(name = "integration.identity.enabled", havingValue = "false", matchIfMissing = true)
 @Slf4j
-public class SandboxUserDetailsService implements ReactiveUserDetailsService {
+public class SandboxUserDetailsService implements StaffIdentityPort, ReactiveUserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
     private final Map<String, UserDetails> users = new HashMap<>();
@@ -73,5 +74,14 @@ public class SandboxUserDetailsService implements ReactiveUserDetailsService {
     public Mono<UserDetails> findByUsername(String username) {
         log.debug("Finding user by username: {}", username);
         return Mono.justOrEmpty(users.get(username));
+    }
+
+    @Override
+    public Mono<UserDetails> authenticate(String username, String password) {
+        UserDetails user = users.get(username);
+        if (user == null || password == null || !passwordEncoder.matches(password, user.getPassword())) {
+            return Mono.empty();
+        }
+        return Mono.just(user);
     }
 }

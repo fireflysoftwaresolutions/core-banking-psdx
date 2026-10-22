@@ -23,22 +23,19 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
- * Implementation of ReactiveAuthenticationManager for user authentication.
+ * Staff sign-in. The sandbox and live identity beans both implement {@link StaffIdentityPort}.
  */
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class ReactiveAuthenticationManagerImpl implements ReactiveAuthenticationManager {
 
-    private final ReactiveUserDetailsService userDetailsService;
-    private final PasswordEncoder passwordEncoder;
+    private final StaffIdentityPort identity;
 
     /**
      * Authenticate a user.
@@ -49,12 +46,12 @@ public class ReactiveAuthenticationManagerImpl implements ReactiveAuthentication
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
         String username = authentication.getName();
-        String password = authentication.getCredentials().toString();
-        
+        Object credentials = authentication.getCredentials();
+        String password = credentials == null ? "" : credentials.toString();
+
         log.debug("Authenticating user: {}", username);
-        
-        return userDetailsService.findByUsername(username)
-                .filter(userDetails -> passwordEncoder.matches(password, userDetails.getPassword()))
+
+        return identity.authenticate(username, password)
                 .map(this::createAuthentication)
                 .switchIfEmpty(Mono.error(new BadCredentialsException("Invalid username or password")));
     }
