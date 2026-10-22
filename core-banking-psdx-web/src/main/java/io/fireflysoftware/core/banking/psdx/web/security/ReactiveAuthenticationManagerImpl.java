@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
- * Staff sign-in. The sandbox and live identity beans both implement {@link StaffIdentityPort}.
+ * Staff sign-in against the sandbox identity adapter. This core does not call another service.
  */
 @Component
 @RequiredArgsConstructor

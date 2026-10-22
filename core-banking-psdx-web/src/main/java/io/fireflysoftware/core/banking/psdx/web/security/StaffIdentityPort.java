@@ -21,11 +21,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import reactor.core.publisher.Mono;
 
 /**
- * Staff sign-in for the PSD2 service.
- * {@link SandboxUserDetailsService} is active while {@code integration.identity.enabled} is unset.
- * {@link SdkStaffIdentityAdapter} is the live bean. It looks up the account through
- * core-common-user-mgmt, which publishes no password. Sign-in then succeeds only when
- * {@link HttpPasswordVerifier} is configured. An installer replaces {@code HttpPasswordVerifier}.
+ * Staff sign-in for the PSD2 core.
+ * {@link SandboxUserDetailsService} is the only implementation. It checks the in-memory
+ * users and does not open a socket. Live account lookup belongs to domain-banking-psdx.
  */
 public interface StaffIdentityPort {
 

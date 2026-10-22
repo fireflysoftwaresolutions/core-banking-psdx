@@ -97,10 +97,6 @@ integration:
     enabled: ${SCA_MGMT_ENABLED:false}
     base-url: "${SCA_MGMT_URL:http://core-common-sca-mgmt:8080}"
     timeout: 5000
-  identity:
-    enabled: ${IDENTITY_ENABLED:false}
-    base-url: "${USER_MGMT_URL:http://core-common-user-mgmt:8080}"
-    verifier-url: ${IDENTITY_VERIFIER_URL:}
 
 # PSD2/PSD3 and FIDA Configuration
 psdx:

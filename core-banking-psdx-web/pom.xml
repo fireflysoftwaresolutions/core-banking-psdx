@@ -72,10 +72,6 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.fireflysoftware</groupId>
-            <artifactId>core-common-user-mgmt-sdk</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
             <version>0.11.5</version>

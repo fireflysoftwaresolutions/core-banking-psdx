@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,12 +31,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * In-memory staff users {@code admin} and {@code user}. Selected only while
- * {@code integration.identity.enabled} is unset. This adapter does not open a socket.
- * The live bean is {@link SdkStaffIdentityAdapter}.
+ * In-memory staff users {@code admin} and {@code user}. This is the only staff
+ * identity adapter in the PSD2 core. It does not open a socket.
+ * Live account lookup is domain-banking-psdx, which calls core-common-user-mgmt.
  */
 @Service
-@ConditionalOnProperty(name = "integration.identity.enabled", havingValue = "false", matchIfMissing = true)
 @Slf4j
 public class SandboxUserDetailsService implements StaffIdentityPort, ReactiveUserDetailsService {
 
