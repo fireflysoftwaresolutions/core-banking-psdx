@@ -29,7 +29,7 @@ import java.util.UUID;
 /**
  * In-memory completed payment. The same request or payment id always returns the same record.
  */
-public class SandboxPaymentServiceAdapter implements PaymentServicePort {
+public class SandboxPaymentServiceAdapterImpl implements PaymentServicePort {
 
     private static final String COMPLETED = "ACSC";
 

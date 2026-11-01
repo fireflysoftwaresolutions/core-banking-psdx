@@ -31,9 +31,9 @@ import java.util.List;
 /**
  * Interceptor for validating required headers in requests.
  */
-@Component
+@Component("requestHeadersInterceptor")
 @Slf4j
-public class RequestHeadersInterceptor implements WebFilter {
+public class RequestHeadersInterceptorImpl implements WebFilter {
 
     private static final List<String> PUBLIC_PATHS = Arrays.asList(
             "/api/v1/auth/token",

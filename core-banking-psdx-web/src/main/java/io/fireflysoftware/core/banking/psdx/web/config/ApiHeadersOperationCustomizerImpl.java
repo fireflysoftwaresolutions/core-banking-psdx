@@ -28,8 +28,8 @@ import java.util.ArrayList;
 /**
  * Customizer for OpenAPI operations to add common headers.
  */
-@Component
-public class ApiHeadersOperationCustomizer implements OperationCustomizer {
+@Component("apiHeadersOperationCustomizer")
+public class ApiHeadersOperationCustomizerImpl implements OperationCustomizer {
 
     /**
      * Customize the OpenAPI operation by adding common headers.

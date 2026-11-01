@@ -34,10 +34,10 @@ import java.util.UUID;
 /**
  * Service for validating consents.
  */
-@Service
+@Service("consentValidationService")
 @RequiredArgsConstructor
 @Slf4j
-public class ConsentValidationService {
+public class ConsentValidationServiceImpl {
 
     private final ConsentRepository consentRepository;
     private final AccessLogService accessLogService;

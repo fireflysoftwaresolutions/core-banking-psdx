@@ -16,7 +16,7 @@
 
 package io.fireflysoftware.core.banking.psdx.core.config;
 
-import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxTransactionServiceAdapter;
+import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxTransactionServiceAdapterImpl;
 import io.fireflysoftware.core.banking.psdx.core.ports.TransactionServicePort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +30,6 @@ public class TransactionServiceClientConfig {
 
     @Bean
     public TransactionServicePort transactionServicePort() {
-        return new SandboxTransactionServiceAdapter();
+        return new SandboxTransactionServiceAdapterImpl();
     }
 }

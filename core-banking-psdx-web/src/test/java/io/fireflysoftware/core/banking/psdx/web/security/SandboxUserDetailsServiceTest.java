@@ -33,7 +33,7 @@ class SandboxUserDetailsServiceTest {
 
     @Test
     void sandboxAcceptsTheDeterministicUsers() {
-        var sandbox = new SandboxUserDetailsService(new BCryptPasswordEncoder());
+        var sandbox = new SandboxUserDetailsServiceImpl(new BCryptPasswordEncoder());
         var manager = new ReactiveAuthenticationManagerImpl(sandbox);
 
         StepVerifier.create(sandbox.authenticate("admin", "admin"))
@@ -46,7 +46,7 @@ class SandboxUserDetailsServiceTest {
 
     @Test
     void sandboxRejectsUnknownPasswords() {
-        var sandbox = new SandboxUserDetailsService(new BCryptPasswordEncoder());
+        var sandbox = new SandboxUserDetailsServiceImpl(new BCryptPasswordEncoder());
         var manager = new ReactiveAuthenticationManagerImpl(sandbox);
 
         StepVerifier.create(sandbox.authenticate("admin", "sandbox"))
@@ -64,13 +64,13 @@ class SandboxUserDetailsServiceTest {
     void liveIdentityPropertyStillUsesTheSandboxAndOpensNoSocket() {
         new ApplicationContextRunner()
                 .withBean(PasswordEncoder.class, BCryptPasswordEncoder::new)
-                .withUserConfiguration(SandboxUserDetailsService.class)
+                .withUserConfiguration(SandboxUserDetailsServiceImpl.class)
                 .withPropertyValues(
                         "integration.identity.enabled=true",
                         "integration.identity.base-url=http://core-common-user-mgmt:8080")
                 .run(context -> {
                     assertThat(context).hasSingleBean(StaffIdentityPort.class);
-                    assertThat(context.getBean(StaffIdentityPort.class)).isInstanceOf(SandboxUserDetailsService.class);
+                    assertThat(context.getBean(StaffIdentityPort.class)).isInstanceOf(SandboxUserDetailsServiceImpl.class);
                     StepVerifier.create(context.getBean(StaffIdentityPort.class).authenticate("admin", "sandbox"))
                             .expectComplete()
                             .verify(Duration.ofSeconds(2));

@@ -40,10 +40,10 @@ import java.util.stream.Collectors;
  * validates it against the ThirdPartyProviderService, and sets
  * the authentication in the security context.
  */
-@Component
+@Component("apiKeyAuthenticationWebFilter")
 @RequiredArgsConstructor
 @Slf4j
-public class ApiKeyAuthenticationWebFilter implements WebFilter {
+public class ApiKeyAuthenticationWebFilterImpl implements WebFilter {
 
     private final ThirdPartyProviderService thirdPartyProviderService;
 

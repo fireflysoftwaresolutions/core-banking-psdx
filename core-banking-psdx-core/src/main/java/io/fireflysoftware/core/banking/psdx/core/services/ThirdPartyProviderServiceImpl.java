@@ -18,7 +18,7 @@
 package io.fireflysoftware.core.banking.psdx.core.services;
 
 import io.fireflysoftware.core.banking.psdx.core.mappers.ThirdPartyProviderMapper;
-import io.fireflysoftware.core.banking.psdx.core.security.CertificateValidationService;
+import io.fireflysoftware.core.banking.psdx.core.security.CertificateValidationServiceImpl;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDThirdPartyProviderDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDThirdPartyProviderRegistrationDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.enums.ProviderStatus;
@@ -44,7 +44,7 @@ public class ThirdPartyProviderServiceImpl implements ThirdPartyProviderService 
 
     private final ThirdPartyProviderRepository thirdPartyProviderRepository;
     private final ThirdPartyProviderMapper thirdPartyProviderMapper;
-    private final CertificateValidationService certificateValidationService;
+    private final CertificateValidationServiceImpl certificateValidationService;
 
     @Override
     public Mono<PSDThirdPartyProviderDTO> registerProvider(PSDThirdPartyProviderRegistrationDTO registration) {
@@ -58,7 +58,7 @@ public class ThirdPartyProviderServiceImpl implements ThirdPartyProviderService 
             }
 
             // Extract certificate information
-            CertificateValidationService.CertificateInfo certInfo =
+            CertificateValidationServiceImpl.CertificateInfo certInfo =
                     certificateValidationService.extractCertificateInfo(registration.getCertificate().getContent());
             if (certInfo != null) {
                 // Update certificate fields in the registration DTO

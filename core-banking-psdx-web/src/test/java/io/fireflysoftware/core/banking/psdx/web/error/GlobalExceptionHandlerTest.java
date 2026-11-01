@@ -67,7 +67,7 @@ class GlobalExceptionHandlerTest {
     private LinkBuilder linkBuilder;
 
     private WebProperties.Resources resources;
-    private GlobalExceptionHandler exceptionHandler;
+    private GlobalExceptionHandlerImpl exceptionHandler;
 
     @BeforeEach
     void setUp() {
@@ -86,7 +86,7 @@ class GlobalExceptionHandlerTest {
         lenient().when(serverCodecConfigurer.getReaders()).thenReturn(Collections.emptyList());
         lenient().when(serverCodecConfigurer.getWriters()).thenReturn(Collections.emptyList());
 
-        exceptionHandler = new GlobalExceptionHandler(
+        exceptionHandler = new GlobalExceptionHandlerImpl(
                 errorAttributes,
                 resources,
                 appContext,

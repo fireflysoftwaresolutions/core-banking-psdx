@@ -41,11 +41,11 @@ class RequestHeadersInterceptorTest {
     @Mock
     private WebFilterChain chain;
 
-    private RequestHeadersInterceptor interceptor;
+    private RequestHeadersInterceptorImpl interceptor;
 
     @BeforeEach
     void setUp() {
-        interceptor = new RequestHeadersInterceptor();
+        interceptor = new RequestHeadersInterceptorImpl();
         lenient().when(chain.filter(any())).thenReturn(Mono.empty());
     }
 

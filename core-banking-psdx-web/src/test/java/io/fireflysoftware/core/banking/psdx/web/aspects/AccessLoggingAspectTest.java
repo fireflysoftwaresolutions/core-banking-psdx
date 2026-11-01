@@ -17,7 +17,7 @@
 
 package io.fireflysoftware.core.banking.psdx.web.aspects;
 
-import io.fireflysoftware.core.banking.psdx.core.services.AccessLogService;
+import io.fireflysoftware.core.banking.psdx.core.services.AccessLogServiceInterfaceImpl;
 import static org.mockito.ArgumentMatchers.any;
 import io.fireflysoftware.core.banking.psdx.interfaces.enums.AccessStatus;
 import static org.mockito.ArgumentMatchers.any;
@@ -79,7 +79,7 @@ import static org.mockito.ArgumentMatchers.any;
 class AccessLoggingAspectTest {
 
     @Mock
-    private AccessLogService accessLogService;
+    private AccessLogServiceInterfaceImpl accessLogService;
 
     @Mock
     private ProceedingJoinPoint joinPoint;

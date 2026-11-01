@@ -31,7 +31,7 @@ import java.util.UUID;
 /**
  * In-memory card sample. The same party, card, or transaction id always returns the same record.
  */
-public class SandboxCardServiceAdapter implements CardServicePort {
+public class SandboxCardServiceAdapterImpl implements CardServicePort {
 
     @Override
     public Flux<PSDCardAccountDTO> getCardAccountsByPartyId(UUID partyId) {
@@ -47,18 +47,18 @@ public class SandboxCardServiceAdapter implements CardServicePort {
 
     @Override
     public Flux<PSDBalanceDTO> getBalancesByCardId(UUID cardId) {
-        return Flux.just(SandboxAccountServiceAdapter.balance(new BigDecimal("250.00")));
+        return Flux.just(SandboxAccountServiceAdapterImpl.balance(new BigDecimal("250.00")));
     }
 
     @Override
     public Flux<PSDTransactionDTO> getTransactionsByCardId(UUID cardId, LocalDate fromDate, LocalDate toDate) {
         UUID transactionId = SandboxSamples.id("card-transaction", SandboxSamples.text(cardId));
-        return Flux.just(SandboxTransactionServiceAdapter.transaction(transactionId, fromDate));
+        return Flux.just(SandboxTransactionServiceAdapterImpl.transaction(transactionId, fromDate));
     }
 
     @Override
     public Mono<PSDTransactionDTO> getTransactionByCardIdAndTransactionId(UUID cardId, UUID transactionId) {
-        return Mono.just(SandboxTransactionServiceAdapter.transaction(transactionId, null));
+        return Mono.just(SandboxTransactionServiceAdapterImpl.transaction(transactionId, null));
     }
 
     private static PSDCardAccountDTO card(UUID cardId, UUID ownerId) {

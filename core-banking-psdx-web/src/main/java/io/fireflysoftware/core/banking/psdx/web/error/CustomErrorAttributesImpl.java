@@ -36,9 +36,9 @@ import java.util.Map;
  * This class customizes the error attributes returned in error responses.
  * It formats errors according to PSD2/PSD3 standards.
  */
-@Component
+@Component("customErrorAttributes")
 @RequiredArgsConstructor
-public class CustomErrorAttributes extends DefaultErrorAttributes {
+public class CustomErrorAttributesImpl extends DefaultErrorAttributes {
 
     private final LinkBuilderFactory linkBuilderFactory;
 

@@ -17,7 +17,7 @@
 
 package io.fireflysoftware.core.banking.psdx.web.interceptors;
 
-import io.fireflysoftware.core.banking.psdx.core.services.ConsentValidationService;
+import io.fireflysoftware.core.banking.psdx.core.services.ConsentValidationServiceImpl;
 import io.fireflysoftware.core.banking.psdx.interfaces.services.ThirdPartyProviderService;
 import io.fireflysoftware.core.banking.psdx.interfaces.enums.ResourceType;
 import io.fireflysoftware.core.banking.psdx.interfaces.exceptions.PSDConsentInvalidException;
@@ -38,12 +38,12 @@ import java.util.UUID;
 /**
  * Interceptor for validating consents in requests.
  */
-@Component
+@Component("consentValidationInterceptor")
 @RequiredArgsConstructor
 @Slf4j
-public class ConsentValidationInterceptor implements WebFilter {
+public class ConsentValidationInterceptorImpl implements WebFilter {
 
-    private final ConsentValidationService consentValidationService;
+    private final ConsentValidationServiceImpl consentValidationService;
     private final ThirdPartyProviderService thirdPartyProviderService;
 
     private static final List<String> PUBLIC_PATHS = Arrays.asList(

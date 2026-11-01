@@ -33,18 +33,18 @@ import java.util.Date;
 /**
  * Service for validating TPP certificates.
  */
-@Service
+@Service("certificateValidationService")
 @Slf4j
-public class CertificateValidationService {
+public class CertificateValidationServiceImpl {
 
     private final boolean certificateValidationEnabled;
 
     /**
-     * Constructor for CertificateValidationService.
+     * Constructor for CertificateValidationServiceImpl.
      *
      * @param certificateValidationEnabled Whether certificate validation is enabled
      */
-    public CertificateValidationService(
+    public CertificateValidationServiceImpl(
             @Value("${psdx.tpp.validation.certificate-validation:true}") boolean certificateValidationEnabled) {
         this.certificateValidationEnabled = certificateValidationEnabled;
         log.info("Certificate validation enabled: {}", certificateValidationEnabled);

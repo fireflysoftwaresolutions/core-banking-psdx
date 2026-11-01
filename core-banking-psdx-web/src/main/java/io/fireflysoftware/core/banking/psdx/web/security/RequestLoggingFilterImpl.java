@@ -39,10 +39,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * - Requests with suspicious headers
  * - Requests with suspicious parameters
  */
-@Component
+@Component("requestLoggingFilter")
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
-public class RequestLoggingFilter implements WebFilter {
+public class RequestLoggingFilterImpl implements WebFilter {
 
     private static final int REQUEST_THRESHOLD = 100;
     private static final Duration WINDOW_DURATION = Duration.ofMinutes(1);

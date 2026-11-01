@@ -35,10 +35,10 @@ import reactor.core.publisher.Mono;
  * This filter extracts the JWT token from the Authorization header,
  * validates it, and sets the authentication in the security context.
  */
-@Component
+@Component("jwtAuthenticationWebFilter")
 @RequiredArgsConstructor
 @Slf4j
-public class JwtAuthenticationWebFilter implements WebFilter {
+public class JwtAuthenticationWebFilterImpl implements WebFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 

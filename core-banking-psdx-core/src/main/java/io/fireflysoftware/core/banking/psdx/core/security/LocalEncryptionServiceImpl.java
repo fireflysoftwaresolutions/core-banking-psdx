@@ -33,9 +33,9 @@ import java.util.Base64;
 /**
  * Service for encrypting and decrypting sensitive data.
  */
-@Service
+@Service("encryptionService")
 @Slf4j
-public class EncryptionService {
+public class LocalEncryptionServiceImpl {
 
     private static final int GCM_IV_LENGTH = 12;
     private static final int GCM_TAG_LENGTH = 16;
@@ -46,13 +46,13 @@ public class EncryptionService {
     private final SecureRandom secureRandom;
 
     /**
-     * Constructor for EncryptionService.
+     * Constructor for LocalEncryptionServiceImpl.
      *
      * @param encryptionEnabled Whether encryption is enabled
      * @param algorithm The encryption algorithm
      * @param secretKeyString The secret key
      */
-    public EncryptionService(
+    public LocalEncryptionServiceImpl(
             @Value("${psdx.security.encryption.enabled:false}") boolean encryptionEnabled,
             @Value("${psdx.security.encryption.algorithm:AES/GCM/NoPadding}") String algorithm,
             @Value("${psdx.security.encryption.secret-key:}") String secretKeyString) {
