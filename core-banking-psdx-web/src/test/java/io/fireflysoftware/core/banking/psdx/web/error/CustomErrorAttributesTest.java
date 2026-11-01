@@ -62,7 +62,7 @@ class CustomErrorAttributesTest {
     @Spy
     private DefaultErrorAttributes defaultErrorAttributes = new DefaultErrorAttributes();
 
-    private CustomErrorAttributes customErrorAttributes;
+    private CustomErrorAttributesImpl customErrorAttributes;
 
     @BeforeEach
     void setUp() {
@@ -76,7 +76,7 @@ class CustomErrorAttributesTest {
             return request.exchange().getAttributes().get("org.springframework.boot.webflux.error.DefaultErrorAttributes.ERROR");
         }).when(defaultErrorAttributes).getError(any());
 
-        customErrorAttributes = new CustomErrorAttributes(linkBuilderFactory) {
+        customErrorAttributes = new CustomErrorAttributesImpl(linkBuilderFactory) {
             @Override
             public Throwable getError(ServerRequest request) {
                 return defaultErrorAttributes.getError(request);

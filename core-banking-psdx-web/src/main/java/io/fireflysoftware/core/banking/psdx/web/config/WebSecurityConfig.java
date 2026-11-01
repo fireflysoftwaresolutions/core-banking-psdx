@@ -17,8 +17,8 @@
 
 package io.fireflysoftware.core.banking.psdx.web.config;
 
-import io.fireflysoftware.core.banking.psdx.web.security.ApiKeyAuthenticationWebFilter;
-import io.fireflysoftware.core.banking.psdx.web.security.JwtAuthenticationWebFilter;
+import io.fireflysoftware.core.banking.psdx.web.security.ApiKeyAuthenticationWebFilterImpl;
+import io.fireflysoftware.core.banking.psdx.web.security.JwtAuthenticationWebFilterImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,8 +45,8 @@ import org.springframework.security.web.server.authentication.HttpStatusServerEn
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final ApiKeyAuthenticationWebFilter apiKeyAuthenticationWebFilter;
-    private final JwtAuthenticationWebFilter jwtAuthenticationWebFilter;
+    private final ApiKeyAuthenticationWebFilterImpl apiKeyAuthenticationWebFilter;
+    private final JwtAuthenticationWebFilterImpl jwtAuthenticationWebFilter;
 
     /**
      * Configure the security filter chain.

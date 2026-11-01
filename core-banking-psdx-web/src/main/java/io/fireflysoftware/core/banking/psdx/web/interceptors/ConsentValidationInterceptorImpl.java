@@ -38,10 +38,10 @@ import java.util.UUID;
 /**
  * Interceptor for validating consents in requests.
  */
-@Component
+@Component("consentValidationInterceptor")
 @RequiredArgsConstructor
 @Slf4j
-public class ConsentValidationInterceptor implements WebFilter {
+public class ConsentValidationInterceptorImpl implements WebFilter {
 
     private final ConsentValidationServiceImpl consentValidationService;
     private final ThirdPartyProviderService thirdPartyProviderService;

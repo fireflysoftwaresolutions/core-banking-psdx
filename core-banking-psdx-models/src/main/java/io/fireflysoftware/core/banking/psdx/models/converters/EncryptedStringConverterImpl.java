@@ -28,7 +28,7 @@ import org.springframework.r2dbc.core.Parameter;
  */
 @WritingConverter
 @RequiredArgsConstructor
-public class EncryptedStringConverter implements Converter<String, Parameter> {
+public class EncryptedStringConverterImpl implements Converter<String, Parameter> {
 
     private final EncryptionService encryptionService;
 

@@ -53,7 +53,7 @@ import java.util.Map;
 @Component("psdxGlobalExceptionHandler")
 @Order(-2)
 @Slf4j
-public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
+public class GlobalExceptionHandlerImpl extends AbstractErrorWebExceptionHandler {
 
     private final LinkBuilderFactory linkBuilderFactory;
 
@@ -66,7 +66,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
      * @param serverCodecConfigurer The server codec configurer
      * @param linkBuilderFactory The link builder factory
      */
-    public GlobalExceptionHandler(
+    public GlobalExceptionHandlerImpl(
             ErrorAttributes errorAttributes,
             WebProperties.Resources resources,
             ApplicationContext applicationContext,

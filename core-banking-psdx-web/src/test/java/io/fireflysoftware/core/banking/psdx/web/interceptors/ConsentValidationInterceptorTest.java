@@ -56,7 +56,7 @@ class ConsentValidationInterceptorTest {
     @Mock
     private WebFilterChain chain;
 
-    private ConsentValidationInterceptor interceptor;
+    private ConsentValidationInterceptorImpl interceptor;
 
     // Test constants
     private static final String VALID_CONSENT_ID = "550e8400-e29b-41d4-a716-446655440000";
@@ -65,7 +65,7 @@ class ConsentValidationInterceptorTest {
 
     @BeforeEach
     void setUp() {
-        interceptor = new ConsentValidationInterceptor(consentValidationService, thirdPartyProviderService);
+        interceptor = new ConsentValidationInterceptorImpl(consentValidationService, thirdPartyProviderService);
         lenient().when(chain.filter(any())).thenReturn(Mono.empty());
         PSDThirdPartyProviderDTO provider = new PSDThirdPartyProviderDTO();
         provider.setId(PROVIDER_ID);

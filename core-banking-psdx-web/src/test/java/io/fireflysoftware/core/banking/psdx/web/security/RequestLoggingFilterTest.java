@@ -56,11 +56,11 @@ class RequestLoggingFilterTest {
     @Mock
     private ServerHttpResponse response;
 
-    private RequestLoggingFilter filter;
+    private RequestLoggingFilterImpl filter;
 
     @BeforeEach
     void setUp() throws UnknownHostException {
-        filter = new RequestLoggingFilter();
+        filter = new RequestLoggingFilterImpl();
 
         // Mock HTTP headers and query params
         org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();

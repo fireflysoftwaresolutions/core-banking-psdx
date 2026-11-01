@@ -27,7 +27,7 @@ import org.springframework.data.convert.ReadingConverter;
  */
 @ReadingConverter
 @RequiredArgsConstructor
-public class DecryptedStringConverter implements Converter<String, String> {
+public class DecryptedStringConverterImpl implements Converter<String, String> {
 
     private final EncryptionService encryptionService;
 

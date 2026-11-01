@@ -18,8 +18,8 @@
 package io.fireflysoftware.core.banking.psdx.models.config;
 
 import io.fireflysoftware.core.banking.psdx.interfaces.security.EncryptionService;
-import io.fireflysoftware.core.banking.psdx.models.converters.DecryptedStringConverter;
-import io.fireflysoftware.core.banking.psdx.models.converters.EncryptedStringConverter;
+import io.fireflysoftware.core.banking.psdx.models.converters.DecryptedStringConverterImpl;
+import io.fireflysoftware.core.banking.psdx.models.converters.EncryptedStringConverterImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,8 +46,8 @@ public class R2dbcConverterConfig {
     @Bean
     public R2dbcCustomConversions r2dbcCustomConversions() {
         List<Object> converters = new ArrayList<>();
-        converters.add(new EncryptedStringConverter(encryptionService));
-        converters.add(new DecryptedStringConverter(encryptionService));
+        converters.add(new EncryptedStringConverterImpl(encryptionService));
+        converters.add(new DecryptedStringConverterImpl(encryptionService));
         return R2dbcCustomConversions.of(PostgresDialect.INSTANCE, converters);
     }
 }
