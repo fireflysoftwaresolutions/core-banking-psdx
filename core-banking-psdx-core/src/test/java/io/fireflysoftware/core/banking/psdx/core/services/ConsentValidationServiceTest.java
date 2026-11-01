@@ -39,7 +39,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * Tests for the ConsentValidationService.
+ * Tests for the ConsentValidationServiceImpl.
  */
 @ExtendWith(MockitoExtension.class)
 class ConsentValidationServiceTest {
@@ -50,7 +50,7 @@ class ConsentValidationServiceTest {
     @Mock
     private io.fireflysoftware.core.banking.psdx.interfaces.services.AccessLogService accessLogService;
 
-    private ConsentValidationService consentValidationService;
+    private ConsentValidationServiceImpl consentValidationService;
 
     // Test constants
     private static final UUID CONSENT_ID = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
@@ -64,7 +64,7 @@ class ConsentValidationServiceTest {
 
     @BeforeEach
     void setUp() {
-        consentValidationService = new ConsentValidationService(consentRepository, accessLogService);
+        consentValidationService = new ConsentValidationServiceImpl(consentRepository, accessLogService);
 
         LocalDateTime now = LocalDateTime.now();
 

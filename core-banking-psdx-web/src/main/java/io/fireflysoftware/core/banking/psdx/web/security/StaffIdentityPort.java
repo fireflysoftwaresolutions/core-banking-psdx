@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * Staff sign-in for the PSD2 core.
- * {@link SandboxUserDetailsService} is the only implementation. It checks the in-memory
+ * {@link SandboxUserDetailsServiceImpl} is the only implementation. It checks the in-memory
  * users and does not open a socket. Live account lookup belongs to domain-banking-psdx.
  */
 public interface StaffIdentityPort {

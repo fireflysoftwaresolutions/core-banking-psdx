@@ -29,7 +29,7 @@ import java.util.UUID;
 /**
  * In-memory booked transaction. The same account or transaction id always returns the same record.
  */
-public class SandboxTransactionServiceAdapter implements TransactionServicePort {
+public class SandboxTransactionServiceAdapterImpl implements TransactionServicePort {
 
     @Override
     public Flux<PSDTransactionDTO> getTransactionsByAccountId(UUID accountId, LocalDate fromDate, LocalDate toDate) {

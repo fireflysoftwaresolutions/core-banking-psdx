@@ -16,7 +16,7 @@
 
 package io.fireflysoftware.core.banking.psdx.core.config;
 
-import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxPaymentServiceAdapter;
+import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxPaymentServiceAdapterImpl;
 import io.fireflysoftware.core.banking.psdx.core.ports.PaymentServicePort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +30,6 @@ public class PaymentServiceClientConfig {
 
     @Bean
     public PaymentServicePort paymentServicePort() {
-        return new SandboxPaymentServiceAdapter();
+        return new SandboxPaymentServiceAdapterImpl();
     }
 }

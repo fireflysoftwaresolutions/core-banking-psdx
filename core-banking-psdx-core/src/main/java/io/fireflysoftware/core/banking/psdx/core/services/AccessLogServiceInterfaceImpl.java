@@ -37,10 +37,10 @@ import java.util.UUID;
 /**
  * Service for managing access logs.
  */
-@Service
+@Service("accessLogService")
 @RequiredArgsConstructor
 @Slf4j
-public class AccessLogService implements AccessLogServiceInterface {
+public class AccessLogServiceInterfaceImpl implements AccessLogServiceInterface {
 
     private final AccessLogRepository accessLogRepository;
     private final AccessLogMapper accessLogMapper;

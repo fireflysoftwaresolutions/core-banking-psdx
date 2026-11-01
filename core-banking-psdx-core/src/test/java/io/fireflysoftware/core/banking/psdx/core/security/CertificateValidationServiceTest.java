@@ -23,15 +23,15 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests for the CertificateValidationService.
+ * Tests for the CertificateValidationServiceImpl.
  */
 class CertificateValidationServiceTest {
 
-    private CertificateValidationService certificateValidationService;
+    private CertificateValidationServiceImpl certificateValidationService;
 
     @BeforeEach
     void setUp() {
-        certificateValidationService = new CertificateValidationService(true);
+        certificateValidationService = new CertificateValidationServiceImpl(true);
     }
 
     @Test
@@ -67,7 +67,7 @@ class CertificateValidationServiceTest {
     @Test
     void extractCertificateInfo_withNullCertificate_shouldReturnNull() {
         // When
-        CertificateValidationService.CertificateInfo result = certificateValidationService.extractCertificateInfo(null);
+        CertificateValidationServiceImpl.CertificateInfo result = certificateValidationService.extractCertificateInfo(null);
 
         // Then
         assertNull(result);
@@ -76,7 +76,7 @@ class CertificateValidationServiceTest {
     @Test
     void extractCertificateInfo_withEmptyCertificate_shouldReturnNull() {
         // When
-        CertificateValidationService.CertificateInfo result = certificateValidationService.extractCertificateInfo("");
+        CertificateValidationServiceImpl.CertificateInfo result = certificateValidationService.extractCertificateInfo("");
 
         // Then
         assertNull(result);
@@ -88,7 +88,7 @@ class CertificateValidationServiceTest {
         String invalidCertificate = "invalid certificate content";
 
         // When
-        CertificateValidationService.CertificateInfo result = certificateValidationService.extractCertificateInfo(invalidCertificate);
+        CertificateValidationServiceImpl.CertificateInfo result = certificateValidationService.extractCertificateInfo(invalidCertificate);
 
         // Then
         assertNull(result);

@@ -18,7 +18,7 @@
 package io.fireflysoftware.core.banking.psdx.core.services;
 
 import io.fireflysoftware.core.banking.psdx.core.mappers.ThirdPartyProviderMapper;
-import io.fireflysoftware.core.banking.psdx.core.security.CertificateValidationService;
+import io.fireflysoftware.core.banking.psdx.core.security.CertificateValidationServiceImpl;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDThirdPartyProviderDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDThirdPartyProviderRegistrationDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.enums.ProviderStatus;
@@ -56,7 +56,7 @@ class ThirdPartyProviderServiceImplTest {
     private ThirdPartyProviderMapper thirdPartyProviderMapper;
 
     @Mock
-    private CertificateValidationService certificateValidationService;
+    private CertificateValidationServiceImpl certificateValidationService;
 
     private ThirdPartyProviderServiceImpl thirdPartyProviderService;
 

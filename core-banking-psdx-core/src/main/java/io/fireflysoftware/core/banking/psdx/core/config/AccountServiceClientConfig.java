@@ -16,7 +16,7 @@
 
 package io.fireflysoftware.core.banking.psdx.core.config;
 
-import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxAccountServiceAdapter;
+import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxAccountServiceAdapterImpl;
 import io.fireflysoftware.core.banking.psdx.core.ports.AccountServicePort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +30,6 @@ public class AccountServiceClientConfig {
 
     @Bean
     public AccountServicePort accountServicePort() {
-        return new SandboxAccountServiceAdapter();
+        return new SandboxAccountServiceAdapterImpl();
     }
 }

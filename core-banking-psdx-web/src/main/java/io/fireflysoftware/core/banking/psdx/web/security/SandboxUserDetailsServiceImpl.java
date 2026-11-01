@@ -35,9 +35,9 @@ import java.util.Map;
  * identity adapter in the PSD2 core. It does not open a socket.
  * Live account lookup is domain-banking-psdx, which calls core-common-user-mgmt.
  */
-@Service
+@Service("sandboxUserDetailsService")
 @Slf4j
-public class SandboxUserDetailsService implements StaffIdentityPort, ReactiveUserDetailsService {
+public class SandboxUserDetailsServiceImpl implements StaffIdentityPort, ReactiveUserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
     private final Map<String, UserDetails> users = new HashMap<>();
@@ -45,7 +45,7 @@ public class SandboxUserDetailsService implements StaffIdentityPort, ReactiveUse
     /**
      * Constructor to initialize some test users.
      */
-    public SandboxUserDetailsService(PasswordEncoder passwordEncoder) {
+    public SandboxUserDetailsServiceImpl(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
 
         // Add some test users

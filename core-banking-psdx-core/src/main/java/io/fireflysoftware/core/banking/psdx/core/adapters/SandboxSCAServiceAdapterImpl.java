@@ -28,17 +28,17 @@ import reactor.core.publisher.Mono;
  * In-memory SCA sample. The same party and resource always issue the same challenge.
  * Live challenges are issued by domain-banking-psdx.
  */
-public class SandboxSCAServiceAdapter implements SCAServicePort {
+public class SandboxSCAServiceAdapterImpl implements SCAServicePort {
 
     private final boolean scaRequiredForAllPayments;
     private final double scaExemptionThresholdAmount;
     private final String scaExemptionThresholdCurrency;
 
-    public SandboxSCAServiceAdapter() {
+    public SandboxSCAServiceAdapterImpl() {
         this(true, 30.00, "EUR");
     }
 
-    public SandboxSCAServiceAdapter(boolean scaRequiredForAllPayments,
+    public SandboxSCAServiceAdapterImpl(boolean scaRequiredForAllPayments,
                                      double scaExemptionThresholdAmount,
                                      String scaExemptionThresholdCurrency) {
         this.scaRequiredForAllPayments = scaRequiredForAllPayments;

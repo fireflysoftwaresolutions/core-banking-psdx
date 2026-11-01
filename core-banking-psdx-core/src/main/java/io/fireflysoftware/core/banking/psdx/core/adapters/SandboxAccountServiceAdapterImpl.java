@@ -29,7 +29,7 @@ import java.util.UUID;
 /**
  * In-memory account sample. The same party or account id always returns the same record.
  */
-public class SandboxAccountServiceAdapter implements AccountServicePort {
+public class SandboxAccountServiceAdapterImpl implements AccountServicePort {
 
     @Override
     public Flux<PSDAccountDTO> getAccountsByPartyId(UUID partyId) {

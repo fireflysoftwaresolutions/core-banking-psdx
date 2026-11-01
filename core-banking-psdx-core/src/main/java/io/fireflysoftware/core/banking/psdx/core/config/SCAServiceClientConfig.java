@@ -16,7 +16,7 @@
 
 package io.fireflysoftware.core.banking.psdx.core.config;
 
-import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxSCAServiceAdapter;
+import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxSCAServiceAdapterImpl;
 import io.fireflysoftware.core.banking.psdx.core.ports.SCAServicePort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +34,6 @@ public class SCAServiceClientConfig {
             @Value("${psdx.sca.required-for-all-payments:true}") boolean required,
             @Value("${psdx.sca.exemption-threshold-amount:30.00}") double amount,
             @Value("${psdx.sca.exemption-threshold-currency:EUR}") String currency) {
-        return new SandboxSCAServiceAdapter(required, amount, currency);
+        return new SandboxSCAServiceAdapterImpl(required, amount, currency);
     }
 }

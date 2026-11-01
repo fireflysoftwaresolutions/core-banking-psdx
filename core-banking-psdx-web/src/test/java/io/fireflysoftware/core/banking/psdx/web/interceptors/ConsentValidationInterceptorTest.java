@@ -17,7 +17,7 @@
 
 package io.fireflysoftware.core.banking.psdx.web.interceptors;
 
-import io.fireflysoftware.core.banking.psdx.core.services.ConsentValidationService;
+import io.fireflysoftware.core.banking.psdx.core.services.ConsentValidationServiceImpl;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDThirdPartyProviderDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.enums.ResourceType;
 import io.fireflysoftware.core.banking.psdx.interfaces.services.ThirdPartyProviderService;
@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 class ConsentValidationInterceptorTest {
 
     @Mock
-    private ConsentValidationService consentValidationService;
+    private ConsentValidationServiceImpl consentValidationService;
 
     @Mock
     private ThirdPartyProviderService thirdPartyProviderService;

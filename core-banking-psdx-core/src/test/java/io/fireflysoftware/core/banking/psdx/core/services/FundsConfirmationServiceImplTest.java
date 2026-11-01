@@ -17,7 +17,7 @@
 
 package io.fireflysoftware.core.banking.psdx.core.services;
 
-import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxAccountServiceAdapter;
+import io.fireflysoftware.core.banking.psdx.core.adapters.SandboxAccountServiceAdapterImpl;
 import io.fireflysoftware.core.banking.psdx.core.ports.AccountServicePort;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDAccountReferenceDTO;
 import io.fireflysoftware.core.banking.psdx.interfaces.dtos.PSDAmountDTO;
@@ -81,7 +81,7 @@ class FundsConfirmationServiceImplTest {
     void confirmFunds_shouldReturnConfirmation_whenConsentIsValid() {
         when(consentService.validateConsent(CONSENT_ID, "FUNDS_CONFIRMATION", "READ")).thenReturn(Mono.just(true));
         when(accountServicePort.balancesForReference("DE89370400440532013000"))
-                .thenReturn(Flux.just(SandboxAccountServiceAdapter.balance(new BigDecimal("125.00"))));
+                .thenReturn(Flux.just(SandboxAccountServiceAdapterImpl.balance(new BigDecimal("125.00"))));
         when(fundsConfirmationRepository.save(any(FundsConfirmation.class)))
                 .thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
 
